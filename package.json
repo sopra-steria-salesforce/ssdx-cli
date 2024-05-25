@@ -62,15 +62,9 @@
   },
   "dependencies": {
     "@flxbl-io/sfp": "^38.4.1",
-    "@nestjs/swagger": "^7.3.1",
     "@salesforce/cli": "^2.42.6",
-    "@types/color": "^3.0.6",
-    "class-validator": "^0.14.1",
-    "color": "^4.2.3",
     "commander": "^12.1.0",
     "inquirer": "^9.2.22",
-    "interactive-commander": "^0.5.170",
-    "nest-commander": "^3.13.0",
     "pad": "^3.2.0"
   },
   "config": {
