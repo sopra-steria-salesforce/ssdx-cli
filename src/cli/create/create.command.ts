@@ -1,13 +1,9 @@
+import ora from 'ora';
+import * as print from '../../lib/print-helper';
+
 import { Command } from 'commander';
 import CreateOptions from './dto/create-options.dto';
-
-export function createScratchOrg(options: CreateOptions): void {
-  console.log('Create Scratch Org');
-  console.log(`Name: ${options.scratchOrgName}`);
-  console.log(`days: ${options.durationDays}`);
-}
-
-class CreateCommand {
+export default class CreateCommand {
   program: Command;
   constructor(program: Command) {
     this.program = program;
@@ -30,7 +26,17 @@ class CreateCommand {
   }
 }
 
-export default CreateCommand;
+export function createScratchOrg(options: CreateOptions): void {
+  print.header('Create Scratch Org');
+  console.log(`Name: ${options.scratchOrgName}`);
+  console.log(`days: ${options.durationDays}`);
+
+  const spinner = ora('Creating Scratch Org').start();
+
+  setTimeout(() => {
+    spinner.suffixText = ': successfully created org dsfwefefw@ergre.com';
+  }, 1000);
+}
 
 // import { execSync } from 'child_process';
 

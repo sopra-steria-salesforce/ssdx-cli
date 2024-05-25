@@ -2,7 +2,7 @@ import { Command } from 'commander';
 import * as print from '../../lib/print-helper';
 import AuthOptions from './dto/auth-options.dto';
 
-class AuthCommand {
+export default class AuthCommand {
   program: Command;
   constructor(program: Command) {
     this.program = program;
@@ -17,9 +17,6 @@ class AuthCommand {
   }
 }
 
-export default AuthCommand;
-
 function authenticateOrg(options: AuthOptions): void {
   print.header('Auth org');
-  console.log(`Name: ${options.envName}`);
 }
