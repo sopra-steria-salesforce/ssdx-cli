@@ -1,1 +1,4 @@
-export const myPackage = (taco = ''): string => `${taco} from my package`;
+import cli from './cli/cli';
+
+const myCli = new cli();
+myCli.run();
