@@ -1,4 +1,5 @@
 import { Command } from 'commander';
+import * as print from '../../lib/print-helper';
 import AuthOptions from './dto/auth-options.dto';
 
 class AuthCommand {
@@ -19,6 +20,6 @@ class AuthCommand {
 export default AuthCommand;
 
 function authenticateOrg(options: AuthOptions): void {
-  console.log('Auth org');
+  print.header('Auth org');
   console.log(`Name: ${options.envName}`);
 }

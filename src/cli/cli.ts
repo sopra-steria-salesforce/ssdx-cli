@@ -1,4 +1,4 @@
-import { Command, program } from 'commander';
+import { Command } from 'commander';
 import CreateCommand from './create/create.command';
 import AuthCommand from './auth/auth.command';
 class cli {
