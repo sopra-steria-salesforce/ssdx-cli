@@ -1,10 +1,13 @@
 import ora from 'ora';
 import * as print from '../../lib/print-helper';
+import * as inquirer from 'inquirer';
 
 import { Command } from 'commander';
 import CreateOptions from './dto/create-options.dto';
 export default class CreateCommand {
   program: Command;
+  options!: CreateOptions;
+
   constructor(program: Command) {
     this.program = program;
 
@@ -21,101 +24,43 @@ export default class CreateCommand {
         'The local name of the Scratch Org'
       )
       .action((options: CreateOptions) => {
-        createScratchOrg(options);
+        this.createScratchOrg(options);
       });
   }
+
+  private createScratchOrg(options: CreateOptions): void {
+    this.options = options;
+    print.header('Create Scratch Org');
+    this.verifyName();
+    this.createOrg();
+  }
+
+  private verifyName(): void {
+    if (this.options.scratchOrgName === undefined) {
+      // inquirer
+      //   .prompt<inquirer.Answers>([
+      //     {
+      //       type: 'input',
+      //       name: 'scratchOrgName',
+      //       message: 'What is the name of the Scratch Org?',
+      //     },
+      //   ])
+      //   .then((answers: inquirer.Answers) => {
+      //     this.options.scratchOrgName = answers?.scratchOrgName;
+      //   });
+    }
+  }
+
+  private createOrg(): void {
+    const spinner = ora('Creating Scratch Org').start();
+
+    setTimeout(() => {
+      spinner.succeed(
+        'Creating Scratch Org: successfully created org dsfwefefw@ergre.com'
+      );
+    }, 1000);
+  }
 }
-
-export function createScratchOrg(options: CreateOptions): void {
-  print.header('Create Scratch Org');
-  console.log(`Name: ${options.scratchOrgName}`);
-  console.log(`days: ${options.durationDays}`);
-
-  const spinner = ora('Creating Scratch Org').start();
-
-  setTimeout(() => {
-    spinner.suffixText = ': successfully created org dsfwefefw@ergre.com';
-  }, 1000);
-}
-
-// import { execSync } from 'child_process';
-
-// const C = '\x1b[1;33m';
-// const RED = '\x1b[1;31m';
-// const YELLOW = '\x1b[0;33m';
-// const BLUE = '\x1b[1;34m';
-// const NC = '\x1b[0m'; // No Color
-
-// // SET ENV VARIABLES
-// ///////////////////////////////////////////////////////////////////////////
-// process.env.SF_SKIP_NEW_VERSION_CHECK = 'true';
-// process.env.FORCE_SHOW_SPINNER = 'true';
-// process.env.SF_CAPITALIZE_RECORD_TYPES = 'true';
-
-// function displayCenter(text: string) {
-//   const columns = process.stdout.columns;
-//   const formattedText = text.replace(/(.{1,columns})/g, '$1\n');
-//   console.log(formattedText);
-// }
-
-// function printHeader(text: string) {
-//   console.log(`${C}\n\n`);
-//   console.log(`${'-'.repeat(process.stdout.columns || 80)}`);
-//   displayCenter(text);
-//   console.log(`${'-'.repeat(process.stdout.columns || 80)}`);
-//   console.log(`${NC}`);
-// }
-
-// // CHECK DEVHUB
-// ///////////////////////////////////////////////////////////////////////////
-// function authDevhub() {
-//   console.log(`\n${YELLOW}Set a DevHub alias:${NC}`);
-//   const DEVHUB = readlineSync.question('Alias: ');
-//   execSync(`npm run auth:devhub ${DEVHUB}`, { stdio: 'inherit' });
-// }
-
-// function chooseDevhub() {
-//   console.log('');
-//   const orgListOutput = execSync('npx sf org:list --json').toString();
-//   const orgList = JSON.parse(orgListOutput);
-//   const headers = ['Alias', 'Username', 'Instance', 'Status'];
-//   const separator = headers.map(() => '-'.repeat(10));
-//   const rows = orgList.result.devHubs.map((org: any) => [
-//     org.alias,
-//     org.username,
-//     org.instanceUrl,
-//     org.connectedStatus,
-//   ]);
-//   const table = [headers, separator, ...rows];
-//   console.log(tableToString(table, '\t'));
-
-//   console.log(`\n${YELLOW}Choose a DevHub (production login):${NC}`);
-//   const DEVHUB = readlineSync.question('Alias: ');
-//   console.log('');
-//   execSync(`npx sf config:set target-dev-hub=${DEVHUB}`, { stdio: 'inherit' });
-// }
-
-// function devhubLogin() {
-//   console.log(
-//     `\n${RED}DevHub not authenticated. Do one of the following:${NC}`
-//   );
-
-//   const options = [
-//     'Authenticate DevHub (by logging into production)',
-//     'Choose existing DevHub',
-//   ];
-//   const index = readlineSync.keyInSelect(options, 'Select an option:');
-//   switch (index) {
-//     case 0:
-//       authDevhub();
-//       break;
-//     case 1:
-//       chooseDevhub();
-//       break;
-//     default:
-//       break;
-//   }
-// }
 
 // const devhubOutput = execSync(
 //   'npx sf config get target-dev-hub --json'
