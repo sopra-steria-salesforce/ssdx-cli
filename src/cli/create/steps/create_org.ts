@@ -86,13 +86,10 @@ class create_org {
 
     try {
       this.scratchOrgResult = await scratchOrgCreate(this.scratchOrgConfig);
+      spinner.suffixText = `(successfully created org ${this.scratchOrgResult.username})`;
+      spinner.succeed();
     } catch (error) {
       spinner.fail(JSON.stringify(error));
-
-      return;
     }
-
-    spinner.suffixText = `(successfully created org ${this.scratchOrgResult.username})`;
-    spinner.succeed();
   }
 }
