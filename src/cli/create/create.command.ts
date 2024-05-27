@@ -1,6 +1,7 @@
 import { Command } from 'commander';
 import CreateOptions from './dto/create-options.dto.js';
 import { createScratchOrg } from './steps/create_org.js';
+import { installDependencies } from './steps/dependencies.js';
 
 export default class CreateCommand {
   options!: CreateOptions;
@@ -27,7 +28,11 @@ export default class CreateCommand {
       )
       .action((options: CreateOptions) => {
         this.options = options;
-        void createScratchOrg(options);
+        void this.main();
       });
+  }
+  private async main() {
+    await createScratchOrg(this.options);
+    await installDependencies(this.options);
   }
 }

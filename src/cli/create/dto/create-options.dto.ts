@@ -3,4 +3,5 @@ export default interface CreateOptions {
   scratchOrgName: string;
   targetDevHub: string;
   packageKey: string;
+  scratchOrgUsername: string;
 }
