@@ -1,4 +1,4 @@
 export default interface CreateOptions {
-  durationDays: number;
+  durationDays: string;
   scratchOrgName: string;
 }

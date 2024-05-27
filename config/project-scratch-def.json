@@ -1,0 +1,57 @@
+{
+	"orgName": "Elvia",
+	"edition": "Enterprise",
+	"release": "Current",
+	"adminEmail": "admin@elvia.no.invalid",
+	"features": [
+		"ProcessBuilder",
+		"API",
+		"LiveAgent",
+		"PersonAccounts",
+		"ContactsToMultipleAccounts",
+		"ServiceCloud",
+		"ServiceUser",
+		"Chatbot",
+		"FieldAuditTrail"
+	],
+	"country": "NO",
+	"language": "en_US",
+	"settings": {
+		"surveySettings": {
+			"enableSurvey": true
+		},
+		"accountSettings": {
+			"enableRelateContactToMultipleAccounts": true
+		},
+		"botSettings": {
+			"enableBots": true
+		},
+		"emailAdministrationSettings": {
+			"enableEnhancedEmailEnabled": true
+		},
+		"knowledgeSettings": {
+			"enableKnowledge": true,
+			"enableLightningKnowledge": true
+		},
+		"languageSettings": {
+			"enableTranslationWorkbench": true
+		},
+		"lightningExperienceSettings": {
+			"enableS1DesktopEnabled": true
+		},
+		"liveAgentSettings": {
+			"enableLiveAgent": true
+		},
+		"omniChannelSettings": {
+			"enableOmniChannel": true,
+			"enableOmniSecondaryRoutingPriority": true,
+			"enableOmniSkillsRouting": true
+		},
+		"pathAssistantSettings": {
+			"pathAssistantEnabled": true
+		},
+		"userManagementSettings": {
+			"permsetsInFieldCreation": true
+		}
+	}
+}
