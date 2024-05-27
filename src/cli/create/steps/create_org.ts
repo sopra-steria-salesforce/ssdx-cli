@@ -75,10 +75,6 @@ class create_org {
     this.scratchOrgConfig.durationDays = parseInt(this.options.durationDays);
     this.scratchOrgConfig.wait = new Duration(45, Duration.Unit.MINUTES);
     this.scratchOrgConfig.setDefault = true;
-    this.scratchOrgConfig.orgConfig = {
-      orgName: 'Elvia',
-      snapshot: 'full_snapshot',
-    };
   }
 
   private async createOrg(): Promise<void> {
