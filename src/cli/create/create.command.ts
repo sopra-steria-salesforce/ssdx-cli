@@ -1,6 +1,6 @@
 import { Command } from 'commander';
 import CreateOptions from './dto/create-options.dto.js';
-// import { createScratchOrg } from './steps/create_org.js';
+import { createScratchOrg } from './steps/create_org.js';
 
 export default class CreateCommand {
   program: Command;
@@ -21,12 +21,7 @@ export default class CreateCommand {
         'The local name of the Scratch Org'
       )
       .action((options: CreateOptions) => {
-        this.run(options);
+        void createScratchOrg(options);
       });
-  }
-  private run(options: CreateOptions) {
-    console.log(options);
-
-    // createScratchOrg(options)
   }
 }
