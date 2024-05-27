@@ -3,10 +3,10 @@ import { Duration } from '@salesforce/kit';
 import fs from 'node:fs';
 import path from 'node:path';
 import * as print from '../../../lib/print-helper.js';
-import { input } from '@inquirer/prompts';
+import { input, password } from '@inquirer/prompts';
 import select from '@inquirer/select';
-
 import CreateOptions from '../dto/create-options.dto.js';
+import { chooseDevhub, getDefaultDevhub } from './devhub.js';
 import {
   Org,
   scratchOrgCreate,
@@ -33,11 +33,12 @@ class create_org {
 
   public async createScratchOrg(): Promise<void> {
     print.header('Create Scratch Org');
-    await this.setDevhub();
-    await this.verifyPackageKey();
     await this.setAlias();
-    this.setScratchOrgConfig();
     await this.chooseConfig();
+    await this.verifyPackageKey();
+    await this.findDevhub();
+    await this.setDevhub();
+    this.setScratchOrgConfig();
     // await this.createOrg();
   }
 
@@ -59,12 +60,33 @@ class create_org {
     );
   }
 
+  private async findDevhub(): Promise<void> {
+    if (this.options.targetDevHub) {
+      return;
+    }
+
+    const defaultDevhub = getDefaultDevhub();
+    this.options.targetDevHub = defaultDevhub
+      ? defaultDevhub
+      : await chooseDevhub();
+  }
+
   private async setDevhub(): Promise<void> {
     this.scratchOrgConfig.hubOrg = await Org.create({
-      aliasOrUsername: 'elvia_prod',
+      aliasOrUsername: this.options.targetDevHub,
     });
   }
-  private async verifyPackageKey(): Promise<void> {}
+  private async verifyPackageKey(): Promise<void> {
+    const packageKeyPath = './.sf/package.key';
+    if (fs.existsSync(packageKeyPath)) {
+      this.options.packageKey = fs.readFileSync(packageKeyPath, 'utf8');
+    } else {
+      this.options.packageKey = await password({
+        message: 'Enter package key:',
+      });
+      fs.writeFileSync(packageKeyPath, this.options.packageKey);
+    }
+  }
   private async setAlias(): Promise<void> {
     this.scratchOrgConfig.alias =
       this.options.scratchOrgName === undefined

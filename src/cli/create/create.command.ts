@@ -3,6 +3,7 @@ import CreateOptions from './dto/create-options.dto.js';
 import { createScratchOrg } from './steps/create_org.js';
 
 export default class CreateCommand {
+  options!: CreateOptions;
   program: Command;
 
   constructor(program: Command) {
@@ -18,9 +19,14 @@ export default class CreateCommand {
       )
       .option(
         '-n, --scratch-org-name <string>',
-        'The local name of the Scratch Org'
+        'The alias to give the Scratch Org'
+      )
+      .option(
+        '-v, --target-dev-hub <string>',
+        'The alias or username of the dev hub org'
       )
       .action((options: CreateOptions) => {
+        this.options = options;
         void createScratchOrg(options);
       });
   }
