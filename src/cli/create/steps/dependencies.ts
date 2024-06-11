@@ -1,4 +1,9 @@
 import CreateOptions from '../dto/create-options.dto.js';
+import fs from 'fs';
+import * as print from '../../../lib/print-helper.js';
+import schema from '../dto/sfdx-project.dto.js';
+import { exec as execCb } from 'node:child_process';
+import { promisify } from 'node:util';
 
 export async function installDependencies(
   options: CreateOptions
@@ -8,21 +13,72 @@ export async function installDependencies(
 }
 
 class Dependencies {
+  sfdxProject!: schema;
   options!: CreateOptions;
 
   constructor(options: CreateOptions) {
     this.options = options;
+    this.getSfdxProject();
+  }
+
+  private getSfdxProject() {
+    const SFDX_PROJECT_PATH = './sfdx-project.json';
+    const SFDX_PROJECT_DATA = fs.readFileSync(SFDX_PROJECT_PATH, 'utf8');
+    this.sfdxProject = JSON.parse(SFDX_PROJECT_DATA);
+  }
+
+  private get hasDependencies(): boolean {
+    return (
+      this.sfdxProject.packageDirectories &&
+      this.sfdxProject.packageDirectories.length > 0 &&
+      this.sfdxProject.packageDirectories[0].dependencies &&
+      this.sfdxProject.packageDirectories[0].dependencies.length > 0
+    );
   }
 
   public async install(): Promise<void> {
-    console.log('');
+    if (!this.hasDependencies) return;
 
-    await this.setAlias();
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    print.header('Install Dependencies');
+    console.log(this.packageKeys);
+
+    const exec = promisify(execCb);
+
+    console.log(`${new Date().toString()} : CHILD STARTED`);
+    const { stdout, stderr } = await exec(
+      `sfp dependency:install --installationkeys "${this.packageKeys}" --targetusername ${this.alias} --targetdevhubusername ${this.devhub}`
+    );
+    console.log(`${new Date().toString()} : STDOUT => ${stdout}`);
+    console.log(`${new Date().toString()} : STDERR => ${stderr}`);
+    console.log(`${new Date().toString()} : CHILD ENDED`);
   }
 
-  private async setAlias(): Promise<void> {
-    console.log(this.options.packageKey);
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    console.log(this.options.scratchOrgUsername);
+  private get alias(): string {
+    return this.options.scratchOrgUsername;
+  }
+
+  private get devhub(): string {
+    return this.options.targetDevHub;
+  }
+
+  private get packageKey(): string {
+    return this.options.packageKey;
+  }
+
+  private get packageKeys(): string {
+    const dependencies = [];
+    if (
+      this.sfdxProject.packageDirectories &&
+      this.sfdxProject.packageDirectories.length > 0 &&
+      this.sfdxProject.packageDirectories[0].dependencies &&
+      this.sfdxProject.packageDirectories[0].dependencies.length > 0
+    ) {
+      for (const dependency of this.sfdxProject.packageDirectories[0]
+        .dependencies) {
+        dependencies.push(`${dependency.package}:${this.packageKey}`);
+      }
+    }
+    return dependencies.join(',');
   }
 }

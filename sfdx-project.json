@@ -2,11 +2,20 @@
   "packageDirectories": [
     {
       "path": "force-app",
-      "default": true
+      "default": true,
+      	"dependencies": [
+				{
+					"package": "sf-platform-data-model",
+					"versionNumber": "2.158.0.LATEST"
+				}
+			]
     }
   ],
   "namespace": "",
   "sfdcLoginUrl": "https://login.salesforce.com",
   "sourceApiVersion": "60.0",
-  "packageAliases": {}
+  "packageAliases": {
+    "sf-platform-data-model": "0Ho0900000000TPCAY"
+  }
+
 }

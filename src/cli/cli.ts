@@ -2,6 +2,7 @@ import { Command } from 'commander';
 import CreateCommand from './create/create.command.js';
 import AuthCommand from './auth/auth.command.js';
 import { execSync } from 'node:child_process';
+
 class cli {
   protected static program = new Command();
 

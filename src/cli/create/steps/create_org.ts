@@ -43,10 +43,12 @@ class create_org {
     await this.createOrg();
   }
 
+  // TODO: send inn mange Questions til prompt, for å få spørsmålene samlet
+  // TODO: legg på validate-metoden på Question
   private async setAlias(): Promise<void> {
     this.scratchOrgConfig.alias =
       this.options.scratchOrgName === undefined
-        ? await input({ message: 'Enter Scratch Org name:' })
+        ? await input({ message: 'Enter Scratch Org name:' }) // TODO: validate input (no spaces)
         : this.options.scratchOrgName;
   }
 
@@ -105,9 +107,9 @@ class create_org {
 
   private async createOrg(): Promise<void> {
     const spinner = ora('Creating Scratch Org').start();
-    this.options.scratchOrgUsername = 'test-ztvlb54dmg9e@example.com';
+    this.options.scratchOrgUsername = 'test'; // TODO: remove this line
     spinner.succeed();
-
+    return;
     try {
       this.scratchOrgResult = await scratchOrgCreate(this.scratchOrgConfig);
       const username = this.scratchOrgResult.username ?? '';
