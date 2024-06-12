@@ -47,7 +47,7 @@ class Dependencies {
   }
 
   private get alias(): string {
-    return this.options.scratchOrgUsername;
+    return this.options.scratchOrgResult.username ?? '';
   }
 
   private get devhub(): string {
