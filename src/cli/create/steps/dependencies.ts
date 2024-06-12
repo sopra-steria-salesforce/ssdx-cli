@@ -2,8 +2,7 @@ import CreateOptions from '../dto/create-options.dto.js';
 import fs from 'fs';
 import * as print from '../../../lib/print-helper.js';
 import schema from '../dto/sfdx-project.dto.js';
-import { exec as execCb } from 'node:child_process';
-import { promisify } from 'node:util';
+import { run } from '../../../lib/command-helper.js';
 
 export async function installDependencies(
   options: CreateOptions
@@ -41,17 +40,10 @@ class Dependencies {
 
     await new Promise(resolve => setTimeout(resolve, 1000));
     print.header('Install Dependencies');
-    console.log(this.packageKeys);
 
-    const exec = promisify(execCb);
-
-    console.log(`${new Date().toString()} : CHILD STARTED`);
-    const { stdout, stderr } = await exec(
+    run(
       `sfp dependency:install --installationkeys "${this.packageKeys}" --targetusername ${this.alias} --targetdevhubusername ${this.devhub}`
     );
-    console.log(`${new Date().toString()} : STDOUT => ${stdout}`);
-    console.log(`${new Date().toString()} : STDERR => ${stderr}`);
-    console.log(`${new Date().toString()} : CHILD ENDED`);
   }
 
   private get alias(): string {

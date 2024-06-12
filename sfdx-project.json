@@ -3,12 +3,12 @@
     {
       "path": "force-app",
       "default": true,
-      	"dependencies": [
-				{
-					"package": "sf-platform-data-model",
-					"versionNumber": "2.158.0.LATEST"
-				}
-			]
+      "dependencies": [
+        {
+          "package": "sf-platform-data-model",
+          "versionNumber": "2.157.0.LATEST"
+        }
+      ]
     }
   ],
   "namespace": "",
@@ -17,5 +17,4 @@
   "packageAliases": {
     "sf-platform-data-model": "0Ho0900000000TPCAY"
   }
-
 }

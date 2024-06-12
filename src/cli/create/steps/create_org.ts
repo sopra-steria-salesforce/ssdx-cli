@@ -35,10 +35,10 @@ class create_org {
   public async createScratchOrg(): Promise<void> {
     print.header('Create Scratch Org');
     await this.setAlias();
-    await this.chooseConfig();
-    await this.verifyPackageKey();
-    await this.findDevhub();
-    await this.setDevhub();
+    // await this.chooseConfig();
+    await this.verifyPackageKey(); // TODO: move to separate class
+    await this.findDevhub(); // TODO: move to separate class
+    await this.setDevhub(); // TODO: move to separate class
     this.setScratchOrgConfig();
     await this.createOrg();
   }
@@ -107,7 +107,7 @@ class create_org {
 
   private async createOrg(): Promise<void> {
     const spinner = ora('Creating Scratch Org').start();
-    this.options.scratchOrgUsername = 'test'; // TODO: remove this line
+    this.options.scratchOrgUsername = 'elba3'; // TODO: remove this line
     spinner.succeed();
     return;
     try {

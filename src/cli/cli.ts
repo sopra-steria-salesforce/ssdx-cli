@@ -25,6 +25,7 @@ class cli {
     cli.program.parse();
   }
 
+  // TODO: fix
   setDefaultConfig() {
     execSync('export SF_SKIP_NEW_VERSION_CHECK=true');
     execSync('export FORCE_SHOW_SPINNER=true');
