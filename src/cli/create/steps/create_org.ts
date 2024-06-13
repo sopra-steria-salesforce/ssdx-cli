@@ -1,8 +1,9 @@
-import ora from 'ora';
+// import ora from 'ora';
 import * as print from '../../../lib/print-helper.js';
 import CreateOptions from '../dto/create-options.dto.js';
-import { scratchOrgCreate } from '@salesforce/core';
-import { exit } from 'node:process';
+// import { ScratchOrgCreateResult, scratchOrgCreate } from '@salesforce/core';
+// import { exit } from 'node:process';
+import { run } from '../../../lib/command-helper.js';
 
 export async function createScratchOrg(options: CreateOptions): Promise<void> {
   const org = new create_org(options);
@@ -18,20 +19,29 @@ class create_org {
 
   public async createScratchOrg(): Promise<void> {
     print.header('Create Scratch Org');
-    const spinner = ora('Creating Scratch Org').start();
-    // this.options.scratchOrgUsername = 'elba3'; // TODO: remove this line
-    // spinner.succeed();
-    // return;
-    try {
-      this.options.scratchOrgResult = await scratchOrgCreate(
-        this.options.scratchOrgConfig
-      );
-      spinner.suffixText = `(successfully created org ${this.options.scratchOrgResult.username})`;
-      spinner.succeed();
-    } catch (error) {
-      spinner.fail('Failed to create Scratch Org');
-      console.error(error);
-      exit(1);
-    }
+
+    await run('npx sf org:create:scratch', [
+      '--definition-file',
+      this.options.scratchOrgConfigPath,
+      '--alias',
+      this.options.scratchOrgName,
+      '--duration-days',
+      this.options.durationDays,
+      '--set-default',
+      '--w2ait',
+      '45',
+    ]);
+    // const spinner = ora('Creating Scratch Org').start();
+    // try {
+    //   this.options.scratchOrgResult = await scratchOrgCreate(
+    //     this.options.scratchOrgConfig
+    //   );
+    //   spinner.suffixText = `(successfully created org ${this.options.scratchOrgResult.username})`;
+    //   spinner.succeed();
+    // } catch (error) {
+    //   spinner.fail('Failed to create Scratch Org');
+    //   console.error(error);
+    //   exit(1);
+    // }
   }
 }

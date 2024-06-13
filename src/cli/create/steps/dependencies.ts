@@ -7,8 +7,8 @@ import { run } from '../../../lib/command-helper.js';
 export async function installDependencies(
   options: CreateOptions
 ): Promise<void> {
-  const org = new Dependencies(options);
-  await org.install();
+  const dependencies = new Dependencies(options);
+  await dependencies.install();
 }
 
 class Dependencies {
@@ -38,12 +38,16 @@ class Dependencies {
   public async install(): Promise<void> {
     if (!this.hasDependencies) return;
 
-    await new Promise(resolve => setTimeout(resolve, 1000));
     print.header('Install Dependencies');
 
-    run(
-      `sfp dependency:install --installationkeys "${this.packageKeys}" --targetusername ${this.alias} --targetdevhubusername ${this.devhub}`
-    );
+    await run('npx sfp dependency:install', [
+      '--installationkeys',
+      this.packageKeys,
+      '--targetusername',
+      this.alias,
+      '--targetdevhubusername',
+      this.devhub,
+    ]);
   }
 
   private get alias(): string {
@@ -71,6 +75,6 @@ class Dependencies {
         dependencies.push(`${dependency.package}:${this.packageKey}`);
       }
     }
-    return dependencies.join(',');
+    return `"${dependencies.join(' ')}"`;
   }
 }

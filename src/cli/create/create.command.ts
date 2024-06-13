@@ -3,6 +3,7 @@ import CreateOptions from './dto/create-options.dto.js';
 import { createScratchOrg } from './steps/create_org.js';
 import { installDependencies } from './steps/dependencies.js';
 import { initialize } from './steps/initializer.js';
+import { deployMetadata } from './steps/deploy_metadata.js';
 
 export default class CreateCommand {
   options!: CreateOptions;
@@ -36,5 +37,6 @@ export default class CreateCommand {
     await initialize(this.options);
     await createScratchOrg(this.options);
     await installDependencies(this.options);
+    await deployMetadata(this.options);
   }
 }

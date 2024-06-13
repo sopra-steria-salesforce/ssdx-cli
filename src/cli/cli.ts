@@ -1,7 +1,7 @@
 import { Command } from 'commander';
 import CreateCommand from './create/create.command.js';
 import AuthCommand from './auth/auth.command.js';
-import { execSync } from 'node:child_process';
+// import { run } from '../lib/command-helper.js';
 
 class cli {
   protected static program = new Command();
@@ -27,9 +27,9 @@ class cli {
 
   // TODO: fix
   setDefaultConfig() {
-    execSync('export SF_SKIP_NEW_VERSION_CHECK=true');
-    execSync('export FORCE_SHOW_SPINNER=true');
-    execSync('export SF_CAPITALIZE_RECORD_TYPES=true');
+    // await run('export SF_SKIP_NEW_VERSION_CHECK=true');
+    // await run('export FORCE_SHOW_SPINNER=true');
+    // await run('export SF_CAPITALIZE_RECORD_TYPES=true');
   }
 }
 

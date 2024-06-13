@@ -7,6 +7,10 @@
         {
           "package": "sf-platform-data-model",
           "versionNumber": "2.157.0.LATEST"
+        },
+        {
+          "package": "sf-platform-trigger-framework",
+          "versionNumber": "0.9.0.LATEST"
         }
       ]
     }
@@ -15,6 +19,7 @@
   "sfdcLoginUrl": "https://login.salesforce.com",
   "sourceApiVersion": "60.0",
   "packageAliases": {
+    "sf-platform-trigger-framework": "0Ho0900000000TUCAY",
     "sf-platform-data-model": "0Ho0900000000TPCAY"
   }
 }

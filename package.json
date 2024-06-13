@@ -75,7 +75,8 @@
     "commander": "^12.1.0",
     "node-notifier": "^10.0.1",
     "ora": "8.0.1",
-    "pad": "^3.2.0"
+    "pad": "^3.2.0",
+    "promisify-child-process": "^4.1.2"
   },
   "config": {
     "commitizen": {

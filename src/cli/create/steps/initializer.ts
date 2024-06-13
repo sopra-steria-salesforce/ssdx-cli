@@ -11,12 +11,13 @@ import { Org } from '@salesforce/core';
 export async function initialize(options: CreateOptions): Promise<void> {
   print.header('SSDX CLI');
   const init = new initializer(options);
+  init.setScratchOrgConfig();
+  init.setDefaultDevhub();
   await init.setAlias();
   await init.chooseConfig();
   await init.verifyPackageKey();
   await init.findDevhub();
   await init.setDevhub();
-  init.setScratchOrgConfig();
 }
 
 class initializer {
@@ -27,6 +28,17 @@ class initializer {
     this.options.scratchOrgConfig = {
       hubOrg: {} as Org,
     };
+  }
+
+  public setScratchOrgConfig(): void {
+    this.options.scratchOrgConfig.durationDays = parseInt(
+      this.options.durationDays
+    );
+    this.options.scratchOrgConfig.wait = new Duration(
+      45,
+      Duration.Unit.MINUTES
+    );
+    this.options.scratchOrgConfig.setDefault = true;
   }
 
   // TODO: send inn mange Questions til prompt, for å få spørsmålene samlet
@@ -51,8 +63,9 @@ class initializer {
       choices: options,
     });
 
+    this.options.scratchOrgConfigPath = path.join(configFolderPath, answer);
     this.options.scratchOrgConfig.orgConfig = JSON.parse(
-      fs.readFileSync(path.join(configFolderPath, answer), 'utf8')
+      fs.readFileSync(this.options.scratchOrgConfigPath, 'utf8')
     );
   }
 
@@ -68,31 +81,18 @@ class initializer {
     }
   }
 
-  public async findDevhub(): Promise<void> {
-    if (this.options.targetDevHub) {
-      return;
-    }
+  public setDefaultDevhub(): void {
+    this.options.targetDevHub = getDefaultDevhub();
+  }
 
-    const defaultDevhub = getDefaultDevhub();
-    this.options.targetDevHub = defaultDevhub
-      ? defaultDevhub
-      : await chooseDevhub();
+  public async findDevhub(): Promise<void> {
+    this.options.targetDevHub =
+      this.options.targetDevHub || (await chooseDevhub());
   }
 
   public async setDevhub(): Promise<void> {
     this.options.scratchOrgConfig.hubOrg = await Org.create({
       aliasOrUsername: this.options.targetDevHub,
     });
-  }
-
-  public setScratchOrgConfig(): void {
-    this.options.scratchOrgConfig.durationDays = parseInt(
-      this.options.durationDays
-    );
-    this.options.scratchOrgConfig.wait = new Duration(
-      45,
-      Duration.Unit.MINUTES
-    );
-    this.options.scratchOrgConfig.setDefault = true;
   }
 }
