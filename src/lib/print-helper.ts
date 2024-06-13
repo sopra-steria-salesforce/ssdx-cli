@@ -9,7 +9,7 @@ export function header(text: string): void {
     separator: '-',
     edge: '|',
   });
-  info(colors.bold(colors.bgYellow(text)));
+  info(colors.bold(colors.bgYellow(colors.black(text))));
 }
 
 export function subheader(text: string): void {
