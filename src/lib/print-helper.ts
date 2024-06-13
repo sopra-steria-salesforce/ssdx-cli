@@ -63,7 +63,7 @@ function frame(frameOptions: {
       ? half_width_length(edge)
       : text.length;
 
-  let middle = pad(width / 2 - edge.length + text.length / 2 - 2, text);
+  let middle = pad(width / 2 + text.length / 2, text);
   middle = pad(middle, width - edge_length(edge));
 
   const line = pad('', width, separator);
