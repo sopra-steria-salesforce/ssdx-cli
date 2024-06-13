@@ -1,5 +1,5 @@
-// import { spawn } from 'node:child_process';
 import { spawn } from 'promisify-child-process';
+import * as print from './print-helper.js';
 
 export async function run(cmd: string, args: string[] = []): Promise<void> {
   await spawn(cmd, args, {
@@ -7,7 +7,8 @@ export async function run(cmd: string, args: string[] = []): Promise<void> {
     shell: true,
     encoding: 'utf8',
   }).catch(error => {
-    console.error(error);
+    print.error('Error running command:');
+
     throw error;
   });
 }

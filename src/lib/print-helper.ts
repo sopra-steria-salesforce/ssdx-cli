@@ -9,8 +9,7 @@ export function header(text: string): void {
     separator: '-',
     edge: '|',
   });
-  const formatted_text = colors.bold(colors.bgYellow(text));
-  console.log('\n' + formatted_text + '\n');
+  info(colors.bold(colors.bgYellow(text)));
 }
 
 export function subheader(text: string): void {
@@ -18,23 +17,24 @@ export function subheader(text: string): void {
     text: text,
     full_width: false,
     half_width: true,
-    separator: '=',
-    edge: '||',
+    separator: '-',
+    edge: '',
   });
-  const formatted_text = colors.bold(colors.yellow(text));
-  console.log('\n' + formatted_text + '\n');
+  info(colors.bold(colors.yellow(text)));
 }
 
 export function info(text: string): void {
-  console.log(colors.white(`\n ${text}\n`));
+  // TODO: add logging
+  console.log(text);
 }
-
 export function warning(text: string): void {
-  console.log(colors.yellow(`${text}`));
+  console.log(colors.yellow(text));
 }
-
 export function error(text: string): void {
-  console.log(colors.bold(colors.red(`${text}`)));
+  console.log(colors.bold(colors.red(text)));
+}
+export function code(text: string): void {
+  console.log(colors.bgRed(colors.black(text)));
 }
 
 const CMD_WIDTH = process.stdout.columns;
@@ -67,7 +67,7 @@ function frame(frameOptions: {
   middle = pad(middle, width - edge_length(edge));
 
   const line = pad('', width, separator);
-  const output = ` ${line} \n ${edge}${middle}${edge} \n ${line} \n`;
+  const output = `\n ${line} \n ${edge}${middle}${edge} \n ${line} \n`;
 
   return output;
 }
