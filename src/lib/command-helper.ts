@@ -8,7 +8,7 @@ export async function run(cmd: string, args: string[] = []): Promise<void> {
     encoding: 'utf8',
   }).catch(error => {
     print.error('Error running command:');
-
+    print.code(`${cmd} ${args.join(' ')}`);
     throw error;
   });
 }
