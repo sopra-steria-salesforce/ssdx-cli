@@ -44,10 +44,12 @@ class initializer {
   // TODO: send inn mange Questions til prompt, for å få spørsmålene samlet
   // TODO: legg på validate-metoden på Question
   public async setAlias(): Promise<void> {
-    this.options.scratchOrgConfig.alias =
+    this.options.scratchOrgName =
       this.options.scratchOrgName === undefined
         ? await input({ message: 'Enter Scratch Org name:' }) // TODO: validate input (no spaces)
         : this.options.scratchOrgName;
+
+    this.options.scratchOrgConfig.alias = this.options.scratchOrgName;
   }
 
   public async chooseConfig() {

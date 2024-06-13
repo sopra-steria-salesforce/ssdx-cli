@@ -28,9 +28,15 @@ class create_org {
       '--duration-days',
       this.options.durationDays,
       '--set-default',
-      '--w2ait',
+      '--wait',
       '45',
     ]);
+
+    this.options.scratchOrgResult = {
+      username: this.options.scratchOrgName,
+      warnings: [],
+    };
+
     // const spinner = ora('Creating Scratch Org').start();
     // try {
     //   this.options.scratchOrgResult = await scratchOrgCreate(
