@@ -7,6 +7,7 @@ import select from '@inquirer/select';
 import CreateOptions from '../dto/create-options.dto.js';
 import { chooseDevhub, getDefaultDevhub } from './devhub.js';
 import { Org } from '@salesforce/core';
+import { run } from '../../../lib/command-helper.js';
 
 export async function initialize(options: CreateOptions): Promise<void> {
   print.header('SSDX CLI');
@@ -72,6 +73,7 @@ class initializer {
   }
 
   public async verifyPackageKey(): Promise<void> {
+    await run('mkdir', ['-p', '.sf']);
     const packageKeyPath = './.sf/package.key';
     if (fs.existsSync(packageKeyPath)) {
       this.options.packageKey = fs.readFileSync(packageKeyPath, 'utf8');
