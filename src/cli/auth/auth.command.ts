@@ -20,5 +20,5 @@ export default class AuthCommand {
 function authenticateOrg(options: AuthOptions): void {
   console.log(options);
 
-  print.header('Auth org');
+  print.subheader('Auth org');
 }

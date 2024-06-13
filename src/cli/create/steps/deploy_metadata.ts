@@ -15,7 +15,7 @@ class Metadata {
   }
 
   public async deploy(): Promise<void> {
-    print.header('Deploy Metadata');
+    print.subheader('Deploy Metadata');
 
     await run('npx sf project:deploy:start', [
       '--wait',

@@ -38,7 +38,7 @@ class Dependencies {
   public async install(): Promise<void> {
     if (!this.hasDependencies) return;
 
-    print.header('Install Dependencies');
+    print.subheader('Install Dependencies');
 
     await run('npx sfp dependency:install', [
       '--installationkeys',

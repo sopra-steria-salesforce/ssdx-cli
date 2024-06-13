@@ -18,7 +18,7 @@ class create_org {
   }
 
   public async createScratchOrg(): Promise<void> {
-    print.header('Create Scratch Org');
+    print.subheader('Create Scratch Org');
 
     await run('npx sf org:create:scratch', [
       '--definition-file',

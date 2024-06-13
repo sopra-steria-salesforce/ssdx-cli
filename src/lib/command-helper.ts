@@ -6,5 +6,8 @@ export async function run(cmd: string, args: string[] = []): Promise<void> {
     stdio: 'inherit',
     shell: true,
     encoding: 'utf8',
+  }).catch(error => {
+    console.error(error);
+    throw error;
   });
 }
