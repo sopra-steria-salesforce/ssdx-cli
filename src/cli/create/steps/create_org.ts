@@ -37,6 +37,8 @@ class create_org {
       warnings: [],
     };
 
+    // TODO: bruk scratchOrgResume for å hente ut resultatet og bruke ora
+
     // const spinner = ora('Creating Scratch Org').start();
     // try {
     //   this.options.scratchOrgResult = await scratchOrgCreate(
