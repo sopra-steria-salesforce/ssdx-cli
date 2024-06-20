@@ -9,6 +9,11 @@
   "bin": {
     "ssdx": "build/index.js"
   },
+  "files": [
+    "build/*",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsc --project tsconfig.build.json",
     "bin": "tsx ./src/index.ts",

@@ -2,6 +2,9 @@
 .sf
 .sfdx
 
+# build
+build
+
 # Logs
 logs
 *.log
