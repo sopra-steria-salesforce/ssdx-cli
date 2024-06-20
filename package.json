@@ -6,6 +6,9 @@
   "typings": "./build/index.d.ts",
   "main": "index.js",
   "type": "module",
+  "bin": {
+    "ssdx": "build/index.js"
+  },
   "scripts": {
     "build": "tsc --project tsconfig.build.json",
     "bin": "tsx ./src/index.ts",
