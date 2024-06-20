@@ -11,4 +11,7 @@ export default interface CreateOptions {
   scratchOrgConfigPath: string;
   scratchOrgConfig: ScratchOrgCreateOptions;
   scratchOrgResult: ScratchOrgCreateResult;
+  skipDependencies: string;
+  skipDeployment: string;
+  skipPermsetAssignment: string;
 }

@@ -40,6 +40,11 @@ class Dependencies {
 
     print.subheader('Install Dependencies');
 
+    if (this.options.skipDependencies) {
+      print.warning('Skipping dependency installation');
+      return;
+    }
+
     await run('npx sfp dependency:install', [
       '--installationkeys',
       this.packageKeys,

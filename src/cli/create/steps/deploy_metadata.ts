@@ -17,6 +17,11 @@ class Metadata {
   public async deploy(): Promise<void> {
     print.subheader('Deploy Metadata');
 
+    if (this.options.skipDeployment) {
+      print.warning('Skipping deployment');
+      return;
+    }
+
     await run('npx sf project:deploy:start', [
       '--wait',
       '30',

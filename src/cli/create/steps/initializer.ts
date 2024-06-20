@@ -5,15 +5,14 @@ import * as print from '../../../lib/print-helper.js';
 import { input, password } from '@inquirer/prompts';
 import select from '@inquirer/select';
 import CreateOptions from '../dto/create-options.dto.js';
-import { chooseDevhub, getDefaultDevhub } from './devhub.js';
+import { chooseDevhub } from './devhub.js';
 import { Org } from '@salesforce/core';
-import { run } from '../../../lib/command-helper.js';
+import { makeDirectory } from 'make-dir';
 
 export async function initialize(options: CreateOptions): Promise<void> {
   print.header('SSDX CLI');
   const init = new initializer(options);
   init.setScratchOrgConfig();
-  init.setDefaultDevhub();
   await init.setAlias();
   await init.chooseConfig();
   await init.verifyPackageKey();
@@ -73,7 +72,7 @@ class initializer {
   }
 
   public async verifyPackageKey(): Promise<void> {
-    await run('mkdir', ['-p', '.sf']);
+    await makeDirectory('.sf');
     const packageKeyPath = './.sf/package.key';
     if (fs.existsSync(packageKeyPath)) {
       this.options.packageKey = fs.readFileSync(packageKeyPath, 'utf8');
@@ -83,10 +82,6 @@ class initializer {
       });
       fs.writeFileSync(packageKeyPath, this.options.packageKey);
     }
-  }
-
-  public setDefaultDevhub(): void {
-    this.options.targetDevHub = getDefaultDevhub();
   }
 
   public async findDevhub(): Promise<void> {
