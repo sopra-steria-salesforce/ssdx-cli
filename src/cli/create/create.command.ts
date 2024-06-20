@@ -5,7 +5,6 @@ import { installDependencies } from './steps/dependencies.js';
 import { initialize } from './steps/initializer.js';
 import { deployMetadata } from './steps/deploy_metadata.js';
 import { openOrg } from './steps/open_org.js';
-import { getDefaultDevhub } from './steps/devhub.js';
 
 export default class CreateCommand {
   options!: CreateOptions;
@@ -13,8 +12,6 @@ export default class CreateCommand {
 
   constructor(program: Command) {
     this.program = program;
-
-    const devHub = getDefaultDevhub();
 
     this.program
       .command('create')
@@ -30,8 +27,7 @@ export default class CreateCommand {
       )
       .option(
         '-v, --target-dev-hub <string>',
-        'The alias or username of the dev hub org',
-        devHub
+        'The alias or username of the dev hub org'
       )
       .option('--skip-dependencies', 'Skip dependency installation')
       .option('--skip-deployment', 'Skip deployment step')

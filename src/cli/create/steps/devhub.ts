@@ -3,17 +3,23 @@ import { execSync } from 'node:child_process';
 import select from '@inquirer/select';
 import colors from 'colors/safe.js';
 import { Config } from '../dto/config.dto.js';
+import { runCmd } from '../../../lib/command-helper.js';
+import { Ora } from 'ora';
 
-export function getDefaultDevhub(): string {
-  const devhubUsernameOutput = execSync(
+export async function getDefaultDevhub(spinner: Ora): Promise<string> {
+  const devhubUsernameOutput = await runCmd(
     'npx sf config:get target-dev-hub --json'
-  ).toString();
+  );
   const result: Config = JSON.parse(devhubUsernameOutput);
+  const devHub = result.result[0].value;
+  if (devHub) spinner.succeed();
   return result.result[0].value;
 }
 
-export async function chooseDevhub(): Promise<string> {
-  const devHubOptions: { name: string; value: string }[] = getDevhubOptions();
+export async function chooseDevhub(spinner: Ora): Promise<string> {
+  const devHubOptions: { name: string; value: string }[] =
+    await getDevhubOptions();
+  spinner.succeed();
 
   const devHub = await select({
     message: 'Choose DevHub:',
@@ -25,11 +31,17 @@ export async function chooseDevhub(): Promise<string> {
   return devHub;
 }
 
-function getDevhubOptions(): { name: string; value: string }[] {
-  const devhubList = execSync('npx sf org:list --json').toString();
+interface devHubOption {
+  name: string;
+  value: string;
+}
+
+async function getDevhubOptions(): Promise<devHubOption[]> {
+  const devhubList = await runCmd('npx sf org:list --json');
   const devHubListObject = JSON.parse(devhubList) as OrgList;
 
-  const devHubOptions: { name: string; value: string }[] = [];
+  const devHubOptions: devHubOption[] = [];
+
   for (const devHub of devHubListObject.result.devHubs) {
     devHubOptions.push({
       name: `${colors.yellow(devHub.alias)} (${devHub.username})`,

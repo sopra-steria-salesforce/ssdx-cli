@@ -5,10 +5,6 @@ import AuthCommand from './auth/auth.command.js';
 class cli {
   protected static program = new Command();
 
-  public getProgram(): Command {
-    return cli.program;
-  }
-
   constructor() {
     new AuthCommand(cli.program);
     new CreateCommand(cli.program);

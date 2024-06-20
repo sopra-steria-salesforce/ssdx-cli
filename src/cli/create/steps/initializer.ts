@@ -5,9 +5,10 @@ import * as print from '../../../lib/print-helper.js';
 import { input, password } from '@inquirer/prompts';
 import select from '@inquirer/select';
 import CreateOptions from '../dto/create-options.dto.js';
-import { chooseDevhub } from './devhub.js';
+import { chooseDevhub, getDefaultDevhub } from './devhub.js';
 import { Org } from '@salesforce/core';
 import { makeDirectory } from 'make-dir';
+import ora from 'ora';
 
 export async function initialize(options: CreateOptions): Promise<void> {
   print.header('SSDX CLI');
@@ -16,7 +17,7 @@ export async function initialize(options: CreateOptions): Promise<void> {
   await init.setAlias();
   await init.chooseConfig();
   await init.verifyPackageKey();
-  await init.findDevhub();
+  await init.getDevhub();
   await init.setDevhub();
 }
 
@@ -57,7 +58,10 @@ class initializer {
     const configFolderPath = './config/';
 
     fs.readdirSync(configFolderPath).forEach(file => {
-      options.push({ name: file, value: file });
+      const filePath = path.join(configFolderPath, file);
+      if (fs.statSync(filePath).isFile()) {
+        options.push({ name: file, value: file });
+      }
     });
 
     const answer = await select({
@@ -84,9 +88,12 @@ class initializer {
     }
   }
 
-  public async findDevhub(): Promise<void> {
+  public async getDevhub(): Promise<void> {
+    if (this.options.targetDevHub) return;
+    print.info('');
+    const spinner = ora('Fetching DevHub info ...').start();
     this.options.targetDevHub =
-      this.options.targetDevHub || (await chooseDevhub());
+      (await getDefaultDevhub(spinner)) || (await chooseDevhub(spinner));
   }
 
   public async setDevhub(): Promise<void> {
