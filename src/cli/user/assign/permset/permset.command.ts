@@ -4,7 +4,7 @@ import ora from 'ora';
 import * as ssdx from '../../../../lib/ssdx-config.js';
 import { runCmd } from '../../../../lib/command-helper.js';
 import * as assigner from '../assigner-helper.js';
-import AssignOptions from '../dto/assign-options.dto.js';
+import AssignOptions from '../../../../dto/ssdx-config-slot.dto.js';
 
 export default class PermsetsCommand {
   program: Command;

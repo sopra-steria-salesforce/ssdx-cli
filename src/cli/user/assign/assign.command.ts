@@ -1,7 +1,7 @@
 import { Command } from 'commander';
 import LicenseCommand from './permset-license/license.command.js';
 import PermsetsCommand from './permset/permset.command.js';
-import AssignOptions from './dto/assign-options.dto.js';
+import AssignOptions from '../../../dto/ssdx-config-slot.dto.js';
 import * as license from '../../user/assign/permset-license/license.command.js';
 import * as permset from '../../user/assign/permset/permset.command.js';
 

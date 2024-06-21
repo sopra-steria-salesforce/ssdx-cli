@@ -5,7 +5,7 @@ import { installDependencies } from './steps/dependencies.js';
 import { initialize } from './steps/initializer.js';
 import { deployMetadata } from './steps/deploy_metadata.js';
 import { openOrg } from './steps/open_org.js';
-import * as assign from '../user/assign/dto/assign-options.dto.js';
+import * as assign from '../../dto/ssdx-config-slot.dto.js';
 import { assignPermissions } from '../user/assign/assign.command.js';
 
 export default class CreateCommand {
