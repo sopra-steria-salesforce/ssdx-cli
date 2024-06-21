@@ -1,4 +1,32 @@
 {
-  "permission_sets": ["test"],
-  "permission_set_licenses": ["ServiceUserPsl", "SlackServiceUserPsl"]
+  "init": {
+    "permissions": {
+      "permsets": [],
+      "licenses": ["ServiceUserPsl"]
+    },
+    "scripts": {
+      "apex": [],
+      "js": []
+    }
+  },
+  "pre_deploy": {
+    "permissions": {
+      "permsets": [],
+      "licenses": []
+    },
+    "scripts": {
+      "apex": [],
+      "js": []
+    }
+  },
+  "post_deploy": {
+    "permissions": {
+      "permsets": ["test"],
+      "licenses": ["SlackServiceUserPsl"]
+    },
+    "scripts": {
+      "apex": [],
+      "js": []
+    }
+  }
 }

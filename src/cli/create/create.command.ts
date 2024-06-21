@@ -5,8 +5,8 @@ import { installDependencies } from './steps/dependencies.js';
 import { initialize } from './steps/initializer.js';
 import { deployMetadata } from './steps/deploy_metadata.js';
 import { openOrg } from './steps/open_org.js';
-import * as license from '../user/assign/permset-license/license.command.js';
-import * as permset from '../user/assign/permset/permset.command.js';
+import * as assign from '../user/assign/dto/assign-options.dto.js';
+import { assignPermissions } from '../user/assign/assign.command.js';
 
 export default class CreateCommand {
   options!: CreateOptions;
@@ -41,10 +41,16 @@ export default class CreateCommand {
   private async main() {
     await initialize(this.options);
     await createScratchOrg(this.options);
+
+    // dependencies
+    await assignPermissions(assign.init);
     await installDependencies(this.options);
+
+    // deployment
+    await assignPermissions(assign.preDeploy);
     await deployMetadata(this.options);
-    await permset.assign();
-    await license.assign();
+    await assignPermissions(assign.postDeploy);
+
     await openOrg(this.options);
   }
 }
