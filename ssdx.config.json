@@ -5,7 +5,7 @@
       "licenses": ["ServiceUserPsl"]
     },
     "scripts": {
-      "apex": [],
+      "apex": ["bin/apex/enableChatUser.apex"],
       "js": []
     }
   },
@@ -16,7 +16,7 @@
     },
     "scripts": {
       "apex": [],
-      "js": []
+      "js": ["bin/js/test.cjs"]
     }
   },
   "post_deploy": {
@@ -25,7 +25,7 @@
       "licenses": ["SlackServiceUserPsl"]
     },
     "scripts": {
-      "apex": [],
+      "apex": ["bin/apex/addToGroup.apex"],
       "js": []
     }
   }

@@ -2,6 +2,7 @@ import { Command } from 'commander';
 import CreateCommand from './create/create.command.js';
 import AuthCommand from './auth/auth.command.js';
 import UserCommand from './user/user.command.js';
+import ScriptCommand from './script/script.command.js';
 
 class cli {
   protected static program = new Command();
@@ -10,6 +11,7 @@ class cli {
     new AuthCommand(cli.program);
     new CreateCommand(cli.program);
     new UserCommand(cli.program);
+    new ScriptCommand(cli.program);
   }
 
   public run(): void {

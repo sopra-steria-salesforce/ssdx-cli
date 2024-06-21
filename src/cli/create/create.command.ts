@@ -7,6 +7,7 @@ import { deployMetadata } from './steps/deploy_metadata.js';
 import { openOrg } from './steps/open_org.js';
 import * as assign from '../../dto/ssdx-config-slot.dto.js';
 import { assignPermissions } from '../user/assign/assign.command.js';
+import { runScripts } from 'cli/script/script.command.js';
 
 export default class CreateCommand {
   options!: CreateOptions;
@@ -44,12 +45,19 @@ export default class CreateCommand {
 
     // dependencies
     await assignPermissions(assign.init);
+    await runScripts(assign.init);
     await installDependencies(this.options);
 
-    // deployment
+    // pre-deployment
     await assignPermissions(assign.preDeploy);
+    await runScripts(assign.preDeploy);
+
+    // deployment
     await deployMetadata(this.options);
+
+    // post-deployment
     await assignPermissions(assign.postDeploy);
+    await runScripts(assign.postDeploy);
 
     await openOrg(this.options);
   }
