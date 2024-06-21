@@ -3,7 +3,7 @@ import * as print from '../../../../lib/print-helper.js';
 import ora from 'ora';
 import * as ssdx from '../../../../lib/config/ssdx-config.js';
 import { runCmd } from '../../../../lib/command-helper.js';
-import * as assigner from '../../../../lib/config/slot-helper.js';
+import * as slot from '../../../../lib/config/slot-helper.js';
 import SlotOption from '../../../../dto/ssdx-config-slot.dto.js';
 
 export default class PermsetsCommand {
@@ -27,14 +27,14 @@ export default class PermsetsCommand {
 export async function assign(opt: SlotOption) {
   const cnf = ssdx.fetchConfig();
   const permsets: string[] = [];
-  assigner.add(opt.init, permsets, cnf.init.permissions.permsets);
-  assigner.add(opt.preDeploy, permsets, cnf.pre_deploy.permissions.permsets);
-  assigner.add(opt.postDeploy, permsets, cnf.post_deploy.permissions.permsets);
+  slot.add(opt.init, permsets, cnf.init.permissions.permsets);
+  slot.add(opt.preDeploy, permsets, cnf.pre_deploy.permissions.permsets);
+  slot.add(opt.postDeploy, permsets, cnf.post_deploy.permissions.permsets);
 
   const types: string[] = [];
-  assigner.addLabel(opt.init, types, 'Before Dependencies');
-  assigner.addLabel(opt.preDeploy, types, 'Before Deployment');
-  assigner.addLabel(opt.postDeploy, types, 'After Deployment');
+  slot.addLabel(opt.init, types, 'Before Dependencies');
+  slot.addLabel(opt.preDeploy, types, 'Before Deployment');
+  slot.addLabel(opt.postDeploy, types, 'After Deployment');
 
   if (permsets.length === 0) return;
   print.subheader(`Assigning Permission Sets (${types.join(', ')})`); // TODO: smaller header
