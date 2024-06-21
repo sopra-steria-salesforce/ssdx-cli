@@ -14,10 +14,10 @@ export default class PermsetsCommand {
 
     this.program
       .command('user:assign:permsets')
-      .description('')
-      .option('--init', 'Assign permission sets before dependencies', false)
-      .option('--pre_deploy', 'Assign permission sets before deployment', false)
-      .option('--post_deploy', 'Assign permission sets after deployment', false)
+      .description('Assign Permission Sets defined in ssdx-config.json')
+      .option('--init', 'Assigns before dependencies', false)
+      .option('--pre_deploy', 'Assigns before deploy', false)
+      .option('--post_deploy', 'Assigns after deploy', false)
       .action((options: SlotOption) => {
         void assign(options);
       });
@@ -33,8 +33,8 @@ export async function assign(opt: SlotOption) {
 
   const types: string[] = [];
   slot.addLabel(opt.init, types, 'Before Dependencies');
-  slot.addLabel(opt.preDeploy, types, 'Before Deployment');
-  slot.addLabel(opt.postDeploy, types, 'After Deployment');
+  slot.addLabel(opt.preDeploy, types, 'Before Deploy');
+  slot.addLabel(opt.postDeploy, types, 'After Deploy');
 
   if (permsets.length === 0) return;
   print.subheader(`Assigning Permission Sets (${types.join(', ')})`); // TODO: smaller header

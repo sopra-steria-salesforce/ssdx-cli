@@ -17,10 +17,12 @@ export default class AssignCommand {
 
     this.program
       .command('user:assign:permset')
-      .description('')
-      .option('--init', 'Assign permission sets before dependencies', false)
-      .option('--pre_deploy', 'Assign permission sets before deployment', false)
-      .option('--post_deploy', 'Assign permission sets after deployment', false)
+      .description(
+        'Assign Permission Sets and Licenses defined in ssdx-config.json'
+      )
+      .option('--init', 'Assign before dependencies', false)
+      .option('--pre_deploy', 'Assign before deploy', false)
+      .option('--post_deploy', 'Assign after deploy', false)
       .action((options: SlotOption) => {
         void assignPermissions(options);
       });

@@ -14,10 +14,10 @@ export default class LicenseCommand {
 
     this.program
       .command('user:assign:license')
-      .description('')
-      .option('--init', 'Assign licenses before dependencies', false)
-      .option('--pre_deploy', 'Assign licenses before deployment', false)
-      .option('--post_deploy', 'Assign licenses after deployment', false)
+      .description('Assign Permission Set Licenses defined in ssdx-config.json')
+      .option('--init', 'Assigns before dependencies', false)
+      .option('--pre_deploy', 'Assigns before deploy', false)
+      .option('--post_deploy', 'Assigns after deploy', false)
       .action((options: SlotOption) => {
         void assign(options);
       });
@@ -33,8 +33,8 @@ export async function assign(opt: SlotOption) {
 
   const types: string[] = [];
   slot.addLabel(opt.init, types, 'Before Dependencies');
-  slot.addLabel(opt.preDeploy, types, 'Before Deployment');
-  slot.addLabel(opt.postDeploy, types, 'After Deployment');
+  slot.addLabel(opt.preDeploy, types, 'Before Deploy');
+  slot.addLabel(opt.postDeploy, types, 'After Deploy');
 
   if (licenses.length === 0) return;
   print.subheader(`Assigning Permission Set Licenses (${types.join(', ')})`); // TODO: smaller header
