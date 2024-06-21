@@ -1,7 +1,7 @@
 import { Command } from 'commander';
 import LicenseCommand from './permset-license/license.command.js';
 import PermsetsCommand from './permset/permset.command.js';
-import AssignOptions from '../../../dto/ssdx-config-slot.dto.js';
+import SlotOption from '../../../dto/ssdx-config-slot.dto.js';
 import * as license from '../../user/assign/permset-license/license.command.js';
 import * as permset from '../../user/assign/permset/permset.command.js';
 
@@ -21,13 +21,13 @@ export default class AssignCommand {
       .option('--init', 'Assign permission sets before dependencies', false)
       .option('--pre_deploy', 'Assign permission sets before deployment', false)
       .option('--post_deploy', 'Assign permission sets after deployment', false)
-      .action((options: AssignOptions) => {
+      .action((options: SlotOption) => {
         void assignPermissions(options);
       });
   }
 }
 
-export async function assignPermissions(options: AssignOptions) {
+export async function assignPermissions(options: SlotOption) {
   await permset.assign(options);
   await license.assign(options);
 }

@@ -4,7 +4,7 @@ import ora from 'ora';
 import * as ssdx from '../../../../lib/ssdx-config.js';
 import { runCmd } from '../../../../lib/command-helper.js';
 import * as assigner from '../assigner-helper.js';
-import AssignOptions from '../../../../dto/ssdx-config-slot.dto.js';
+import SlotOption from '../../../../dto/ssdx-config-slot.dto.js';
 
 export default class LicenseCommand {
   program: Command;
@@ -18,13 +18,13 @@ export default class LicenseCommand {
       .option('--init', 'Assign licenses before dependencies', false)
       .option('--pre_deploy', 'Assign licenses before deployment', false)
       .option('--post_deploy', 'Assign licenses after deployment', false)
-      .action((options: AssignOptions) => {
+      .action((options: SlotOption) => {
         void assign(options);
       });
   }
 }
 
-export async function assign(opt: AssignOptions) {
+export async function assign(opt: SlotOption) {
   const cnf = ssdx.fetchConfig();
   const licenses: string[] = [];
   assigner.add(opt.init, licenses, cnf.init.permissions.licenses);

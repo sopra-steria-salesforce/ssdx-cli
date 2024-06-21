@@ -4,7 +4,7 @@ import ora from 'ora';
 import * as ssdx from '../../../../lib/ssdx-config.js';
 import { runCmd } from '../../../../lib/command-helper.js';
 import * as assigner from '../assigner-helper.js';
-import AssignOptions from '../../../../dto/ssdx-config-slot.dto.js';
+import SlotOption from '../../../../dto/ssdx-config-slot.dto.js';
 
 export default class PermsetsCommand {
   program: Command;
@@ -18,13 +18,13 @@ export default class PermsetsCommand {
       .option('--init', 'Assign permission sets before dependencies', false)
       .option('--pre_deploy', 'Assign permission sets before deployment', false)
       .option('--post_deploy', 'Assign permission sets after deployment', false)
-      .action((options: AssignOptions) => {
+      .action((options: SlotOption) => {
         void assign(options);
       });
   }
 }
 
-export async function assign(opt: AssignOptions) {
+export async function assign(opt: SlotOption) {
   const cnf = ssdx.fetchConfig();
   const permsets: string[] = [];
   assigner.add(opt.init, permsets, cnf.init.permissions.permsets);
