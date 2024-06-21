@@ -1,0 +1,4 @@
+{
+  "permission_sets": ["test"],
+  "permission_set_licenses": ["ServiceUserPsl", "SlackServiceUserPsl"]
+}

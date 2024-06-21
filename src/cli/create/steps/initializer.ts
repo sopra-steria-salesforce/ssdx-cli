@@ -9,11 +9,13 @@ import { chooseDevhub, getDefaultDevhub } from './devhub.js';
 import { Org } from '@salesforce/core';
 import { makeDirectory } from 'make-dir';
 import ora from 'ora';
+import * as ssdx from '../../../lib/ssdx-config.js';
 
 export async function initialize(options: CreateOptions): Promise<void> {
   print.header('SSDX CLI');
   const init = new initializer(options);
   init.setScratchOrgConfig();
+  init.setSsdxConfig();
   await init.setAlias();
   await init.chooseConfig();
   await init.verifyPackageKey();
@@ -40,6 +42,10 @@ class initializer {
       Duration.Unit.MINUTES
     );
     this.options.scratchOrgConfig.setDefault = true;
+  }
+
+  public setSsdxConfig(): void {
+    this.options.ssdxConfig = ssdx.fetchConfig();
   }
 
   // TODO: send inn mange Questions til prompt, for å få spørsmålene samlet
