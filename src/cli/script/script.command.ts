@@ -1,38 +1,19 @@
-import ora from 'ora';
-import { runCmd } from '../../lib/command-helper.js';
-import * as print from '../../lib/print-helper.js';
 import { Command } from 'commander';
+import AssignCommand from './assign.command.js';
 
-export default class AssignCommand {
+export default class UserCommand {
   program: Command;
-
+  assignCmd: AssignCommand;
   constructor(program: Command) {
     this.program = program;
+    this.assignCmd = new AssignCommand(this.program);
 
-    this.program
-      .command('script')
-      .description('Run the scripts defined in ./ssdx.config.json');
-
-    this.program
-      .command('script:apex')
-      .description('Run the Apex scripts defined in ./ssdx.config.json');
-
-    this.program
-      .command('script:js')
-      .description('Run the JavaScript files defined in ./ssdx.config.json');
+    // this.program
+    //   .command('user:assign:permset')
+    //   .description('')
+    //   .option('-n, --env-name <string>', 'The local name of the Scratch Org')
+    //   .action((options: UserOptions) => {
+    //     authenticateOrg(options);
+    //   });
   }
-}
-
-export async function runApex(file: string) {
-  print.subheader('Running Apex Script');
-  const spinner = ora(`Running ${file}`).start();
-  await runCmd('npx sf org:run:apex', ['--file', file]);
-  spinner.succeed(`Ran ${file}`);
-}
-
-export async function runJs(file: string) {
-  print.subheader('Running JS Script');
-  const spinner = ora(`Running ${file}`).start();
-  await runCmd('npx sf org:run:js', ['--file', file]);
-  spinner.succeed(`Ran ${file}`);
 }

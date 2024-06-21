@@ -1,7 +1,7 @@
 import { Command } from 'commander';
 import * as print from '../../../../lib/print-helper.js';
 import ora from 'ora';
-import * as ssdx from '../../../../lib/ssdx-config.js';
+import * as ssdx from '../../../../lib/config/ssdx-config.js';
 import { runCmd } from '../../../../lib/command-helper.js';
 import * as assigner from '../assigner-helper.js';
 import SlotOption from '../../../../dto/ssdx-config-slot.dto.js';

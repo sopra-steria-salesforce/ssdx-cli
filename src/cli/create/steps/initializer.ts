@@ -9,7 +9,7 @@ import { chooseDevhub, getDefaultDevhub } from './devhub.js';
 import { Org } from '@salesforce/core';
 import { makeDirectory } from 'make-dir';
 import ora from 'ora';
-import * as ssdx from '../../../lib/ssdx-config.js';
+import * as ssdx from '../../../lib/config/ssdx-config.js';
 
 export async function initialize(options: CreateOptions): Promise<void> {
   print.header('SSDX CLI');
