@@ -38,7 +38,7 @@ export async function assign(opt: SlotOption) {
   if (permsets.length === 0) return;
 
   for (const permset of permsets) {
-    const spinner = ora(`PERMISSION SETS: Assigning ${permset}...`).start();
+    const spinner = ora(`PERMISSION SET: Assigning ${permset}...`).start();
     await runCmd('npx sf org:assign:permset', ['--name', permset]);
     spinner.suffixText = ' Done';
     spinner.succeed();

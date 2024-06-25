@@ -38,7 +38,7 @@ export async function assign(opt: SlotOption) {
   if (licenses.length === 0) return;
 
   for (const license of licenses) {
-    const spinner = ora(`LICENSES: Assigning ${license}...`).start();
+    const spinner = ora(`LICENSE: Assigning ${license}...`).start();
     await runCmd('npx sf org:assign:permsetlicense', ['--name', license]);
     spinner.suffixText = ' Done';
     spinner.succeed();

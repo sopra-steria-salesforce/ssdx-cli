@@ -1,6 +1,7 @@
+import ora from 'ora';
 import CreateOptions from '../dto/create-options.dto.js';
 import * as print from '../../../lib/print-helper.js';
-import { run } from '../../../lib/command-helper.js';
+import { run, Output } from '../../../lib/command-helper.js';
 
 export async function deployMetadata(options: CreateOptions): Promise<void> {
   const metadata = new Metadata(options);
@@ -22,15 +23,18 @@ class Metadata {
       return;
     }
 
-    await run('npx sf project:deploy:start', [
-      '--wait',
-      '30',
-      '--target-org',
-      this.alias,
-    ]);
+    await run(
+      'npx sf project:deploy:start',
+      ['--wait', '30', '--target-org', this.alias],
+      Output.LiveAndClear
+    );
+
+    console.log('');
+    const spinner = ora('Deployed Metadata Successfully').start();
+    spinner.succeed();
   }
 
   private get alias(): string {
-    return this.options.scratchOrgResult.username ?? '';
+    return this.options.scratchOrgName ?? '';
   }
 }

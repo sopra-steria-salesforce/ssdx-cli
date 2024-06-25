@@ -1,4 +1,4 @@
-import { OrgList } from '../dto/org.dto.js';
+import { OrgList } from '../dto/orgs.dto.js';
 import { execSync } from 'node:child_process';
 import select from '@inquirer/select';
 import colors from 'colors/safe.js';

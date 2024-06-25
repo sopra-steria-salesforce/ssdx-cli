@@ -1,8 +1,9 @@
+import ora from 'ora';
 import CreateOptions from '../dto/create-options.dto.js';
 import fs from 'fs';
 import * as print from '../../../lib/print-helper.js';
 import schema from '../dto/sfdx-project.dto.js';
-import { run } from '../../../lib/command-helper.js';
+import { run, Output } from '../../../lib/command-helper.js';
 
 export async function installDependencies(
   options: CreateOptions
@@ -45,18 +46,26 @@ class Dependencies {
       return;
     }
 
-    await run('npx sfp dependency:install', [
-      '--installationkeys',
-      this.packageKeys,
-      '--targetusername',
-      this.alias,
-      '--targetdevhubusername',
-      this.devhub,
-    ]);
+    await run(
+      'npx sfp dependency:install',
+      [
+        '--installationkeys',
+        this.packageKeys,
+        '--targetusername',
+        this.alias,
+        '--targetdevhubusername',
+        this.devhub,
+      ],
+      Output.LiveAndClear
+    );
+
+    console.log('');
+    const spinner = ora('Installed Dependencies Successfully').start();
+    spinner.succeed();
   }
 
   private get alias(): string {
-    return this.options.scratchOrgResult.username ?? '';
+    return this.options.scratchOrgName ?? '';
   }
 
   private get devhub(): string {
