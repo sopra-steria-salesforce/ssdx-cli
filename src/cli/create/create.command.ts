@@ -9,6 +9,7 @@ import { openOrg } from './steps/open_org.js';
 import * as assign from '../../dto/ssdx-config-slot.dto.js';
 import { assignPermissions } from '../user/assign/assign.command.js';
 import { runScripts } from '../script/script.command.js';
+import { deployManualMetadata } from '../metadata/metadata.command.js';
 
 export default class CreateCommand {
   options!: CreateOptions;
@@ -48,6 +49,7 @@ export default class CreateCommand {
     print.subheader('Pre-dependency Steps', undefined, print.Color.bgCyan);
     await assignPermissions(assign.init);
     await runScripts(assign.init);
+    await deployManualMetadata(assign.init);
 
     // dependency install
     await installDependencies(this.options);
@@ -56,6 +58,7 @@ export default class CreateCommand {
     print.subheader('Pre-deployment Steps', undefined, print.Color.bgCyan);
     await assignPermissions(assign.preDeploy);
     await runScripts(assign.preDeploy);
+    await deployManualMetadata(assign.preDeploy);
 
     // deployment
     await deployMetadata(this.options);
@@ -64,6 +67,7 @@ export default class CreateCommand {
     print.subheader('Post Deployment Steps', undefined, print.Color.bgCyan);
     await assignPermissions(assign.postDeploy);
     await runScripts(assign.postDeploy);
+    await deployManualMetadata(assign.postDeploy);
     await clearingTracking(this.options);
 
     await openOrg(this.options);

@@ -30,7 +30,7 @@ class Metadata {
 
     await run(
       'npx sf project:deploy:start',
-      ['--wait', '30', '--target-org', this.alias],
+      ['--wait', '30', '--target-org', this.alias, '--ignore-conflicts'],
       Output.LiveAndClear
     );
 
