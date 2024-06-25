@@ -8,7 +8,7 @@ import { clearingTracking, deployMetadata } from './steps/deploy_metadata.js';
 import { openOrg } from './steps/open_org.js';
 import * as assign from '../../dto/ssdx-config-slot.dto.js';
 import { assignPermissions } from '../user/assign/assign.command.js';
-import { runScripts } from 'cli/script/script.command.js';
+import { runScripts } from '../script/script.command.js';
 
 export default class CreateCommand {
   options!: CreateOptions;

@@ -1,4 +1,4 @@
-import ora from 'ora';
+import ora, { Ora } from 'ora';
 import * as print from '../../../lib/print-helper.js';
 import CreateOptions from '../dto/create-options.dto.js';
 // import { ScratchOrgCreateResult, scratchOrgCreate } from '@salesforce/core';
@@ -14,13 +14,15 @@ export async function createScratchOrg(options: CreateOptions): Promise<void> {
 
 class create_org {
   options: CreateOptions;
-
+  spinner!: Ora;
   constructor(options: CreateOptions) {
     this.options = options;
   }
 
   public async createScratchOrg(): Promise<void> {
     print.subheader('Create Scratch Org');
+
+    this.spinner = ora('Creating Scratch Org').start();
 
     await run(
       'npx sf org:create:scratch',
@@ -35,7 +37,7 @@ class create_org {
         '--wait',
         '45',
       ],
-      Output.LiveAndClear
+      Output.Supressed
     );
 
     this.options.scratchOrgResult = {
@@ -61,7 +63,6 @@ class create_org {
 
   public async fetchUsername(): Promise<void> {
     console.log('');
-    const spinner = ora('Creating Scratch Org').start();
 
     const { stdout } = await run('npx sf org:display', [
       '--target-org',
@@ -70,7 +71,7 @@ class create_org {
     ]);
 
     const org: Org = stdout && JSON.parse(stdout);
-    spinner.suffixText = `(username: ${org.result.username})`;
-    spinner.succeed();
+    this.spinner.suffixText = `(username: ${org.result.username})`;
+    this.spinner.succeed();
   }
 }
