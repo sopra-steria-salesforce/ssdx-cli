@@ -1,26 +1,48 @@
 import colors from 'colors/safe.js';
-import pad from 'pad';
+import {
+  frame,
+  getFrameOptions,
+  setColor,
+} from './print-helper/print-helper-formatter.js';
 
-export function header(text: string): void {
-  text = frame({
-    text: text,
-    full_width: true,
-    half_width: false,
-    separator: '-',
-    edge: '|',
-  });
-  info(colors.bold(colors.bgYellow(colors.black(text))));
+export function header(
+  text: string,
+  subText: string | undefined = undefined,
+  bgColor: Color = Color.bgYellow,
+  color: Color = Color.black
+): void {
+  const frameOptions = getFrameOptions(text, subText);
+  frameOptions.full_width = true;
+  frameOptions.top = true;
+  frameOptions.bottom = true;
+  frameOptions.separator = '-';
+  frameOptions.edge = '|';
+
+  text = frame(frameOptions);
+  text = colors.bold(colors.black(text));
+  text = setColor(text, color);
+  text = setColor(text, bgColor);
+  info(text);
 }
 
-export function subheader(text: string): void {
-  text = frame({
-    text: text,
-    full_width: false,
-    half_width: true,
-    separator: '-',
-    edge: '',
-  });
-  info(colors.bold(colors.yellow(text)));
+export function subheader(
+  text: string,
+  subText: string | undefined = undefined,
+  bgColor: Color = Color.bgYellow,
+  color: Color = Color.black
+): void {
+  const frameOptions = getFrameOptions(text, subText);
+  frameOptions.half_width = true;
+  frameOptions.top = true;
+  frameOptions.bottom = true;
+  frameOptions.separator = '-';
+  frameOptions.edge = '|';
+
+  text = frame(frameOptions);
+  text = colors.bold(colors.black(text));
+  text = setColor(text, color);
+  text = setColor(text, bgColor);
+  info(text);
 }
 
 export function info(text: string): void {
@@ -37,37 +59,23 @@ export function code(text: string): void {
   console.log(colors.bgRed(colors.black(text)));
 }
 
-const CMD_WIDTH = process.stdout.columns;
-function full_width_length(edge: string): number {
-  return CMD_WIDTH - edge_length(edge);
-}
-function half_width_length(edge: string): number {
-  return CMD_WIDTH / 2 - edge_length(edge);
-}
-
-function edge_length(edge: string): number {
-  return edge.length * 2;
-}
-
-function frame(frameOptions: {
-  text: string;
-  full_width: boolean;
-  half_width: boolean;
-  separator: string;
-  edge: string;
-}): string {
-  const { text, full_width, half_width, separator, edge } = frameOptions;
-  const width = full_width
-    ? full_width_length(edge)
-    : half_width
-      ? half_width_length(edge)
-      : text.length;
-
-  let middle = pad(width / 2 + text.length / 2, text);
-  middle = pad(middle, width - edge_length(edge));
-
-  const line = pad('', width, separator);
-  const output = `\n ${line} \n ${edge}${middle}${edge} \n ${line} \n`;
-
-  return output;
+export enum Color {
+  black,
+  red,
+  green,
+  yellow,
+  blue,
+  magenta,
+  cyan,
+  white,
+  gray,
+  grey,
+  bgBlack,
+  bgBlue,
+  bgCyan,
+  bgGreen,
+  bgMagenta,
+  bgRed,
+  bgWhite,
+  bgYellow,
 }

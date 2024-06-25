@@ -1,3 +1,4 @@
+import * as print from '../../lib/print-helper.js';
 import { Command } from 'commander';
 import CreateOptions from './dto/create-options.dto.js';
 import { createScratchOrg } from './steps/create_org.js';
@@ -43,12 +44,16 @@ export default class CreateCommand {
     await initialize(this.options);
     await createScratchOrg(this.options);
 
-    // dependencies
+    // pre-dependencies
+    print.subheader('Pre-dependency Steps', undefined, print.Color.bgCyan);
     await assignPermissions(assign.init);
     await runScripts(assign.init);
+
+    // dependency install
     await installDependencies(this.options);
 
     // pre-deployment
+    print.subheader('Pre-deployment Steps', undefined, print.Color.bgCyan);
     await assignPermissions(assign.preDeploy);
     await runScripts(assign.preDeploy);
 
@@ -56,6 +61,7 @@ export default class CreateCommand {
     await deployMetadata(this.options);
 
     // post-deployment
+    print.subheader('Post Deployment Steps', undefined, print.Color.bgCyan);
     await assignPermissions(assign.postDeploy);
     await runScripts(assign.postDeploy);
 

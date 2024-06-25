@@ -1,22 +1,13 @@
 export default interface ssdxConfig {
-  init: Init;
-  pre_deploy: PreDeploy;
-  post_deploy: PostDeploy;
+  init: Types;
+  pre_deploy: Types;
+  post_deploy: Types;
 }
 
-interface Init {
+interface Types {
   permissions: Permissions;
   scripts: Scripts;
-}
-
-interface PreDeploy {
-  permissions: Permissions;
-  scripts: Scripts;
-}
-
-interface PostDeploy {
-  permissions: Permissions;
-  scripts: Scripts;
+  metadata: string[];
 }
 
 interface Permissions {

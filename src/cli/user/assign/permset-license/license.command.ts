@@ -1,5 +1,4 @@
 import { Command } from 'commander';
-import * as print from '../../../../lib/print-helper.js';
 import ora from 'ora';
 import * as ssdx from '../../../../lib/config/ssdx-config.js';
 import { runCmd } from '../../../../lib/command-helper.js';
@@ -37,11 +36,11 @@ export async function assign(opt: SlotOption) {
   slot.addLabel(opt.postDeploy, types, 'After Deploy');
 
   if (licenses.length === 0) return;
-  print.subheader(`Assigning Permission Set Licenses (${types.join(', ')})`); // TODO: smaller header
 
   for (const license of licenses) {
-    const spinner = ora(`Assigning ${license}`).start();
+    const spinner = ora(`LICENSES: Assigning ${license}...`).start();
     await runCmd('npx sf org:assign:permsetlicense', ['--name', license]);
-    spinner.succeed(`Assigned ${license}`);
+    spinner.suffixText = ' Done';
+    spinner.succeed();
   }
 }

@@ -1,5 +1,4 @@
 import { Command } from 'commander';
-import * as print from '../../../../lib/print-helper.js';
 import ora from 'ora';
 import * as ssdx from '../../../../lib/config/ssdx-config.js';
 import { runCmd } from '../../../../lib/command-helper.js';
@@ -37,11 +36,11 @@ export async function assign(opt: SlotOption) {
   slot.addLabel(opt.postDeploy, types, 'After Deploy');
 
   if (permsets.length === 0) return;
-  print.subheader(`Assigning Permission Sets (${types.join(', ')})`); // TODO: smaller header
 
   for (const permset of permsets) {
-    const spinner = ora(`Assigning ${permset}`).start();
+    const spinner = ora(`PERMISSION SETS: Assigning ${permset}...`).start();
     await runCmd('npx sf org:assign:permset', ['--name', permset]);
-    spinner.succeed(`Assigned ${permset}`);
+    spinner.suffixText = ' Done';
+    spinner.succeed();
   }
 }

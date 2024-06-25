@@ -1,5 +1,4 @@
 import { Command } from 'commander';
-import * as print from '../../../lib/print-helper.js';
 import ora from 'ora';
 import * as ssdx from '../../../lib/config/ssdx-config.js';
 import { runCmd } from '../../../lib/command-helper.js';
@@ -37,11 +36,11 @@ export async function runScripts(opt: SlotOption) {
   slot.addLabel(opt.postDeploy, types, 'After Deployment');
 
   if (jsFiles.length === 0) return;
-  print.subheader(`Running js Scripts (${types.join(', ')})`); // TODO: smaller header
 
   for (const jsFile of jsFiles) {
-    const spinner = ora(`Running ${jsFile}...`).start();
+    const spinner = ora(`JAVASCRIPT: Running ${jsFile}...`).start();
     await runCmd('node', [jsFile]);
-    spinner.succeed(`Ran ${jsFile} successfully`);
+    spinner.suffixText = ' Done';
+    spinner.succeed();
   }
 }

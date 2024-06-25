@@ -1,5 +1,4 @@
 import { Command } from 'commander';
-import * as print from '../../../lib/print-helper.js';
 import ora from 'ora';
 import * as ssdx from '../../../lib/config/ssdx-config.js';
 import { runCmd } from '../../../lib/command-helper.js';
@@ -37,11 +36,11 @@ export async function runScript(opt: SlotOption) {
   slot.addLabel(opt.postDeploy, types, 'After Deployment');
 
   if (apexFiles.length === 0) return;
-  print.subheader(`Running Apex Scripts (${types.join(', ')})`); // TODO: smaller header
 
   for (const apexFile of apexFiles) {
-    const spinner = ora(`Running ${apexFile}...`).start();
+    const spinner = ora(`APEX: Running ${apexFile}...`).start();
     await runCmd('npx sf apex:run', ['--file', apexFile]);
-    spinner.succeed(`Ran ${apexFile} successfully`);
+    spinner.suffixText = ' Done';
+    spinner.succeed();
   }
 }
