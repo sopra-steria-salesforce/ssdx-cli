@@ -19,11 +19,12 @@ export async function initialize(options: CreateOptions): Promise<void> {
   init.setScratchOrgConfig();
   init.setSsdxConfig();
   await init.setAlias();
+  // TODO: ask to delete previous
   await init.chooseConfig();
   init.setConfig();
   await init.verifyPackageKey();
   await init.getDevhub();
-  await init.setDevhub();
+  await init.setDevhub(); // ask to save as default for repo
 }
 
 class initializer {
@@ -112,7 +113,7 @@ class initializer {
   public async getDevhub(): Promise<void> {
     if (this.options.targetDevHub) return;
     print.info('');
-    const spinner = ora('Fetching DevHub info ...').start();
+    const spinner = ora('Fetching DevHub info ...').start(); // TODO: print the devhub used
     this.options.targetDevHub =
       (await getDefaultDevhub(spinner)) || (await chooseDevhub(spinner));
   }

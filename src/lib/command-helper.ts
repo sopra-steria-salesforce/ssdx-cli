@@ -2,6 +2,9 @@ import { spawn } from 'promisify-child-process';
 import * as print from './print-helper.js';
 import { exit } from 'process';
 
+// TODO: implement default spinner
+// TODO: implement retry on error
+
 export async function run(
   cmd: string,
   args: string[] = [],
@@ -74,6 +77,8 @@ function clearLastLines(count: number): void {
   process.stdout.moveCursor(0, -count);
   process.stdout.clearScreenDown();
 }
+
+// TODO: move to new method
 
 export async function runCmd(
   cmd: string,
