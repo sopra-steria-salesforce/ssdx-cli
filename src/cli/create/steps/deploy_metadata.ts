@@ -8,6 +8,11 @@ export async function deployMetadata(options: CreateOptions): Promise<void> {
   await metadata.deploy();
 }
 
+export async function clearingTracking(options: CreateOptions): Promise<void> {
+  const metadata = new Metadata(options);
+  await metadata.resetTracking();
+}
+
 class Metadata {
   options!: CreateOptions;
 
@@ -32,6 +37,16 @@ class Metadata {
     console.log('');
     const spinner = ora('Deployed Metadata Successfully').start();
     spinner.succeed();
+  }
+
+  public async resetTracking(): Promise<void> {
+    const spinner = ora('Resetting Metadata Tracking').start();
+    spinner.succeed();
+    await run(
+      'npx sf project:reset:tracking',
+      ['--target-org', this.alias, '--no-prompt'],
+      Output.Supressed
+    );
   }
 
   private get alias(): string {

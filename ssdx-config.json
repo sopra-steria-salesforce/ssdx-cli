@@ -7,7 +7,8 @@
     "scripts": {
       "apex": ["bin/apex/enableChatUser.apex"],
       "js": []
-    }
+    },
+    "metadata": ["force-app"]
   },
   "pre_deploy": {
     "permissions": {
@@ -17,7 +18,8 @@
     "scripts": {
       "apex": [],
       "js": ["bin/js/test.cjs"]
-    }
+    },
+    "metadata": []
   },
   "post_deploy": {
     "permissions": {
@@ -27,6 +29,7 @@
     "scripts": {
       "apex": ["bin/apex/addToGroup.apex"],
       "js": []
-    }
+    },
+    "metadata": []
   }
 }
