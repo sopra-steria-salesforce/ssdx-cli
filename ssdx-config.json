@@ -8,7 +8,7 @@
       "apex": ["bin/apex/enableChatUser.apex"],
       "js": []
     },
-    "metadata": ["force-app"]
+    "metadata": ["bin/metadata/groups/pre_dep.group-meta.xml"]
   },
   "pre_deploy": {
     "permissions": {
@@ -19,7 +19,7 @@
       "apex": [],
       "js": ["bin/js/test.cjs"]
     },
-    "metadata": []
+    "metadata": ["bin/metadata/labels/pre_deploy.labels-meta.xml"]
   },
   "post_deploy": {
     "permissions": {
@@ -30,6 +30,6 @@
       "apex": ["bin/apex/addToGroup.apex"],
       "js": []
     },
-    "metadata": []
+    "metadata": ["bin/metadata/permissionsets/"]
   }
 }

@@ -22,7 +22,7 @@ class OrgOpener {
       ['--target-org', this.options.scratchOrgName],
       Output.Supressed
     );
-    console.log('');
+
     const spinner = ora('Installed Dependencies Successfully').start();
     spinner.succeed();
   }
