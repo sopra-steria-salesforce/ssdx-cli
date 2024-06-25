@@ -7,9 +7,3 @@ export function add(
     values.push(...value);
   }
 }
-
-export function addLabel(to_add: boolean, types: string[] = [], type: string) {
-  if (to_add) {
-    types.push(type);
-  }
-}

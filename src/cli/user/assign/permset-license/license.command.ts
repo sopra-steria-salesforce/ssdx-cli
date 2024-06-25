@@ -30,11 +30,6 @@ export async function assign(opt: SlotOption) {
   slot.add(opt.preDeploy, licenses, cnf.pre_deploy.permissions.licenses);
   slot.add(opt.postDeploy, licenses, cnf.post_deploy.permissions.licenses);
 
-  const types: string[] = [];
-  slot.addLabel(opt.init, types, 'Before Dependencies');
-  slot.addLabel(opt.preDeploy, types, 'Before Deploy');
-  slot.addLabel(opt.postDeploy, types, 'After Deploy');
-
   if (licenses.length === 0) return;
 
   for (const license of licenses) {

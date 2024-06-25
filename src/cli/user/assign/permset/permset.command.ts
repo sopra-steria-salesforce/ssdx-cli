@@ -30,11 +30,6 @@ export async function assign(opt: SlotOption) {
   slot.add(opt.preDeploy, permsets, cnf.pre_deploy.permissions.permsets);
   slot.add(opt.postDeploy, permsets, cnf.post_deploy.permissions.permsets);
 
-  const types: string[] = [];
-  slot.addLabel(opt.init, types, 'Before Dependencies');
-  slot.addLabel(opt.preDeploy, types, 'Before Deploy');
-  slot.addLabel(opt.postDeploy, types, 'After Deploy');
-
   if (permsets.length === 0) return;
 
   for (const permset of permsets) {

@@ -30,11 +30,6 @@ export async function runScript(opt: SlotOption) {
   slot.add(opt.preDeploy, apexFiles, cnf.pre_deploy.scripts.apex);
   slot.add(opt.postDeploy, apexFiles, cnf.post_deploy.scripts.apex);
 
-  const types: string[] = [];
-  slot.addLabel(opt.init, types, 'Before Dependencies');
-  slot.addLabel(opt.preDeploy, types, 'Before Deployment');
-  slot.addLabel(opt.postDeploy, types, 'After Deployment');
-
   if (apexFiles.length === 0) return;
 
   for (const apexFile of apexFiles) {

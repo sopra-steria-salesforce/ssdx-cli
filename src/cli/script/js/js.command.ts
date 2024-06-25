@@ -30,11 +30,6 @@ export async function runScripts(opt: SlotOption) {
   slot.add(opt.preDeploy, jsFiles, cnf.pre_deploy.scripts.js);
   slot.add(opt.postDeploy, jsFiles, cnf.post_deploy.scripts.js);
 
-  const types: string[] = [];
-  slot.addLabel(opt.init, types, 'Before Dependencies');
-  slot.addLabel(opt.preDeploy, types, 'Before Deployment');
-  slot.addLabel(opt.postDeploy, types, 'After Deployment');
-
   if (jsFiles.length === 0) return;
 
   for (const jsFile of jsFiles) {
