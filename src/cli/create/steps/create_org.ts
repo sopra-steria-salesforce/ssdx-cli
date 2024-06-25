@@ -62,7 +62,7 @@ class create_org {
   // }
 
   public async fetchUsername(): Promise<void> {
-    console.log('');
+    // console.log('');
 
     const { stdout } = await run('npx sf org:display', [
       '--target-org',
