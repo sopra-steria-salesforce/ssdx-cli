@@ -1,4 +1,5 @@
 export default interface ssdxConfig {
+  default_config: string;
   init: Types;
   pre_deploy: Types;
   post_deploy: Types;

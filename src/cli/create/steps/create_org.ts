@@ -28,7 +28,7 @@ class create_org {
       'npx sf org:create:scratch',
       [
         '--definition-file',
-        this.options.scratchOrgConfigPath,
+        this.options.configFile,
         '--alias',
         this.options.scratchOrgName,
         '--duration-days',

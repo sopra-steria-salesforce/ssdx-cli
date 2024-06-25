@@ -31,6 +31,10 @@ export default class CreateCommand {
         '5'
       )
       .option(
+        '-c, --config-file <string>',
+        'The Scratch Org config file (see ssdx-config.json for default value)'
+      )
+      .option(
         '-v, --target-dev-hub <string>',
         'The alias or username of the dev hub org'
       )

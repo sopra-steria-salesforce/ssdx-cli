@@ -11,6 +11,8 @@ import { makeDirectory } from 'make-dir';
 import ora from 'ora';
 import * as ssdx from '../../../lib/config/ssdx-config.js';
 
+const CONFIG_FOLDER_PATH = './config/';
+
 export async function initialize(options: CreateOptions): Promise<void> {
   print.header('SSDX CLI');
   const init = new initializer(options);
@@ -18,6 +20,7 @@ export async function initialize(options: CreateOptions): Promise<void> {
   init.setSsdxConfig();
   await init.setAlias();
   await init.chooseConfig();
+  init.setConfig();
   await init.verifyPackageKey();
   await init.getDevhub();
   await init.setDevhub();
@@ -60,11 +63,20 @@ class initializer {
   }
 
   public async chooseConfig() {
-    const options: { name: string; value: string }[] = [];
-    const configFolderPath = './config/';
+    if (this.options.configFile) {
+      return;
+    } else if (this.options.ssdxConfig.default_config) {
+      this.options.configFile = this.options.ssdxConfig.default_config;
+    } else {
+      await this.configDecision();
+    }
+  }
 
-    fs.readdirSync(configFolderPath).forEach(file => {
-      const filePath = path.join(configFolderPath, file);
+  private async configDecision(): Promise<void> {
+    const options: { name: string; value: string }[] = [];
+
+    fs.readdirSync(CONFIG_FOLDER_PATH).forEach(file => {
+      const filePath = path.join(CONFIG_FOLDER_PATH, file);
       if (fs.statSync(filePath).isFile()) {
         options.push({ name: file, value: file });
       }
@@ -75,9 +87,12 @@ class initializer {
       choices: options,
     });
 
-    this.options.scratchOrgConfigPath = path.join(configFolderPath, answer);
+    this.options.configFile = path.join(CONFIG_FOLDER_PATH, answer);
+  }
+
+  public setConfig() {
     this.options.scratchOrgConfig.orgConfig = JSON.parse(
-      fs.readFileSync(this.options.scratchOrgConfigPath, 'utf8')
+      fs.readFileSync(this.options.configFile, 'utf8')
     );
   }
 

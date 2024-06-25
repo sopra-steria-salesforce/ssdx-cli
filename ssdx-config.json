@@ -1,4 +1,5 @@
 {
+  "default_config": "config/project-scratch-def.json",
   "init": {
     "permissions": {
       "permsets": [],
