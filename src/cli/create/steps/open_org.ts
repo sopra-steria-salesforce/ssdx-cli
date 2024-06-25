@@ -23,7 +23,7 @@ class OrgOpener {
       Output.Supressed
     );
 
-    const spinner = ora('Installed Dependencies Successfully').start();
+    const spinner = ora('Opened Org Successfully').start();
     spinner.succeed();
   }
 }

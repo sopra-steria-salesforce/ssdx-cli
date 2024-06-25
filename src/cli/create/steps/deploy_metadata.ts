@@ -27,10 +27,17 @@ class Metadata {
       print.warning('Skipping deployment');
       return;
     }
-
+    // TODO: move to new metadata class
     await run(
       'npx sf project:deploy:start',
-      ['--wait', '30', '--target-org', this.alias, '--ignore-conflicts'],
+      [
+        '--wait',
+        '30',
+        '--target-org',
+        this.alias,
+        '--ignore-conflicts',
+        '--concise',
+      ],
       Output.LiveAndClear
     );
 

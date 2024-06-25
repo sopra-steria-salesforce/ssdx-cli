@@ -44,6 +44,7 @@ export async function deployManualMetadata(opt: SlotOption) {
       '--source-dir',
       metadata,
       '--ignore-conflicts',
+      '--concise',
     ]);
     spinner.suffixText = ' Done';
     spinner.succeed();
