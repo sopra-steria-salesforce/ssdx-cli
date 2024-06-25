@@ -38,7 +38,7 @@ class create_org {
         '45',
       ],
       Output.Supressed
-    );
+    ); // TODO: add Output.LiveAndClear (bug, output wont appear)
 
     this.options.scratchOrgResult = {
       username: this.options.scratchOrgName,
