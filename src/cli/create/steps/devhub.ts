@@ -2,7 +2,7 @@ import { OrgList } from '../dto/orgs.dto.js';
 import { execSync } from 'node:child_process';
 import select from '@inquirer/select';
 import colors from 'colors/safe.js';
-import { Config } from '../dto/config.dto.js';
+import { Config } from '../dto/create-config.dto.js';
 import { runCmd } from '../../../lib/command-helper.js';
 import { Ora } from 'ora';
 
