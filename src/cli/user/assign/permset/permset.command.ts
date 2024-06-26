@@ -4,6 +4,7 @@ import * as ssdx from '../../../../lib/config/ssdx-config.js';
 import { runCmd } from '../../../../lib/command-helper.js';
 import * as slot from '../../../../lib/config/slot-helper.js';
 import SlotOption from '../../../../dto/ssdx-config-slot.dto.js';
+import { getDefaultOrg } from '../../../create/steps/devhub.js';
 
 export default class PermsetsCommand {
   program: Command;
@@ -14,6 +15,7 @@ export default class PermsetsCommand {
     this.program
       .command('user:assign:permsets')
       .description('Assign Permission Sets defined in ssdx-config.json')
+      .option('--target-org', 'The org to run the scripts on')
       .option('--init', 'Assigns before dependencies', false)
       .option('--pre_deploy', 'Assigns before deploy', false)
       .option('--post_deploy', 'Assigns after deploy', false)
@@ -24,6 +26,7 @@ export default class PermsetsCommand {
 }
 
 export async function assign(opt: SlotOption) {
+  opt.targetOrg = opt.targetOrg ?? (await getDefaultOrg());
   const cnf = ssdx.fetchConfig();
   const permsets: string[] = [];
   slot.add(opt.init, permsets, cnf.init.permissions.permsets);
@@ -34,7 +37,12 @@ export async function assign(opt: SlotOption) {
 
   for (const permset of permsets) {
     const spinner = ora(`PERMISSION SET: Assigning ${permset}...`).start();
-    await runCmd('npx sf org:assign:permset', ['--name', permset]);
+    await runCmd('npx sf org:assign:permset', [
+      '--name',
+      permset,
+      '--target-org',
+      opt.targetOrg,
+    ]);
     spinner.suffixText = ' Done';
     spinner.succeed();
   }

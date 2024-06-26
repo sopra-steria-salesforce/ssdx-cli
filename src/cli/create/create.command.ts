@@ -49,29 +49,35 @@ export default class CreateCommand {
     await initialize(this.options);
     await createScratchOrg(this.options);
 
+    // assigner slots
+    // TODO: change slot options to default options
+    const { init, preDeploy, postDeploy } = assign.getSlotOptions(
+      this.options.scratchOrgName
+    );
+
     // pre-dependencies
-    print.subheader('Pre-dependency Steps', undefined, print.Color.bgCyan);
-    await assignPermissions(assign.init);
-    await runScripts(assign.init);
-    await deployManualMetadata(assign.init);
+    print.subheader('Pre-dependency Steps', undefined, print.Color.bgCyan); // TODO: check if steps are added before printing header
+    await assignPermissions(init);
+    await runScripts(init);
+    await deployManualMetadata(init);
 
     // dependency install
     await installDependencies(this.options);
 
     // pre-deployment
     print.subheader('Pre-deployment Steps', undefined, print.Color.bgCyan);
-    await assignPermissions(assign.preDeploy);
-    await runScripts(assign.preDeploy);
-    await deployManualMetadata(assign.preDeploy);
+    await assignPermissions(preDeploy);
+    await runScripts(preDeploy);
+    await deployManualMetadata(preDeploy);
 
     // deployment
     await deployMetadata(this.options);
 
     // post-deployment
     print.subheader('Post Deployment Steps', undefined, print.Color.bgCyan);
-    await assignPermissions(assign.postDeploy);
-    await runScripts(assign.postDeploy);
-    await deployManualMetadata(assign.postDeploy);
+    await assignPermissions(postDeploy);
+    await runScripts(postDeploy);
+    await deployManualMetadata(postDeploy);
     await clearingTracking(this.options);
 
     await openOrg(this.options);

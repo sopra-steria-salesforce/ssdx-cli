@@ -4,6 +4,7 @@ import * as ssdx from '../../../../lib/config/ssdx-config.js';
 import { runCmd } from '../../../../lib/command-helper.js';
 import * as slot from '../../../../lib/config/slot-helper.js';
 import SlotOption from '../../../../dto/ssdx-config-slot.dto.js';
+import { getDefaultOrg } from '../../../create/steps/devhub.js';
 
 export default class LicenseCommand {
   program: Command;
@@ -14,6 +15,7 @@ export default class LicenseCommand {
     this.program
       .command('user:assign:license')
       .description('Assign Permission Set Licenses defined in ssdx-config.json')
+      .option('--target-org', 'The org to run the scripts on')
       .option('--init', 'Assigns before dependencies', false)
       .option('--pre_deploy', 'Assigns before deploy', false)
       .option('--post_deploy', 'Assigns after deploy', false)
@@ -24,6 +26,7 @@ export default class LicenseCommand {
 }
 
 export async function assign(opt: SlotOption) {
+  opt.targetOrg = opt.targetOrg ?? (await getDefaultOrg());
   const cnf = ssdx.fetchConfig();
   const licenses: string[] = [];
   slot.add(opt.init, licenses, cnf.init.permissions.licenses);
@@ -34,7 +37,12 @@ export async function assign(opt: SlotOption) {
 
   for (const license of licenses) {
     const spinner = ora(`LICENSE: Assigning ${license}...`).start();
-    await runCmd('npx sf org:assign:permsetlicense', ['--name', license]);
+    await runCmd('npx sf org:assign:permsetlicense', [
+      '--name',
+      license,
+      '--target-org',
+      opt.targetOrg,
+    ]);
     spinner.suffixText = ' Done';
     spinner.succeed();
   }

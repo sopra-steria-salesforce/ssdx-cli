@@ -4,6 +4,7 @@ import * as ssdx from '../../../lib/config/ssdx-config.js';
 import { runCmd } from '../../../lib/command-helper.js';
 import * as slot from '../../../lib/config/slot-helper.js';
 import SlotOption from '../../../dto/ssdx-config-slot.dto.js';
+import { getDefaultOrg } from '../../create/steps/devhub.js';
 
 export default class jsFilesCommand {
   program: Command;
@@ -14,6 +15,7 @@ export default class jsFilesCommand {
     this.program
       .command('script:js')
       .description('Run js scripts defined in ssdx-config.json')
+      .option('--target-org', 'The org to run the scripts on')
       .option('--init', 'Run js scripts before dependencies', false)
       .option('--pre_deploy', 'Run js scripts before deploy', false)
       .option('--post_deploy', 'Run js scripts after deploy', false)
@@ -24,7 +26,9 @@ export default class jsFilesCommand {
 }
 
 export async function runScripts(opt: SlotOption) {
+  opt.targetOrg = opt.targetOrg ?? (await getDefaultOrg());
   const cnf = ssdx.fetchConfig();
+
   const jsFiles: string[] = [];
   slot.add(opt.init, jsFiles, cnf.init.scripts.js);
   slot.add(opt.preDeploy, jsFiles, cnf.pre_deploy.scripts.js);
@@ -34,7 +38,7 @@ export async function runScripts(opt: SlotOption) {
 
   for (const jsFile of jsFiles) {
     const spinner = ora(`JAVASCRIPT: Running ${jsFile}...`).start();
-    await runCmd('node', [jsFile]);
+    await runCmd('node', [jsFile, opt.targetOrg]);
     spinner.suffixText = ' Done';
     spinner.succeed();
   }

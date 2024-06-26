@@ -5,6 +5,7 @@ import * as ssdx from '../../lib/config/ssdx-config.js';
 import { runCmd } from '../../lib/command-helper.js';
 import * as slot from '../../lib/config/slot-helper.js';
 import SlotOption from '../../dto/ssdx-config-slot.dto.js';
+import { getDefaultOrg } from '../create/steps/devhub.js';
 
 export default class MetadataCommand {
   program: Command;
@@ -15,6 +16,7 @@ export default class MetadataCommand {
     this.program
       .command('metadata')
       .description('Deploys all metadata defined in ssdx-config.json')
+      .option('--target-org', 'The org to run the scripts on')
       .option('--init', 'Pre-dependency metadata', false)
       .option('--pre_deploy', 'Pre-deploy metadata', false)
       .option('--normal', 'Normal metadata deployment', false)
@@ -24,8 +26,8 @@ export default class MetadataCommand {
       });
   }
 }
-// TODO: add options to speicify target org
 export async function deployManualMetadata(opt: SlotOption) {
+  opt.targetOrg = opt.targetOrg ?? (await getDefaultOrg());
   const cnf = ssdx.fetchConfig();
   const metadataFiles: string[] = [];
   slot.add(opt.init, metadataFiles, cnf.init.metadata);
@@ -45,6 +47,8 @@ export async function deployManualMetadata(opt: SlotOption) {
       metadata,
       '--ignore-conflicts',
       '--concise',
+      '--target-org',
+      opt.targetOrg,
     ]);
     spinner.suffixText = ' Done';
     spinner.succeed();

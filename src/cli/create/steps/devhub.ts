@@ -6,6 +6,29 @@ import { Config } from '../dto/config.dto.js';
 import { runCmd } from '../../../lib/command-helper.js';
 import { Ora } from 'ora';
 
+// TODO: change to native query method
+/*
+async function getConnection() {
+	return (
+		await core.Org.create({
+			aliasOrUsername: TARGET_ORG
+		})
+	).getConnection();
+}
+
+async function queryRecord(query) {
+	const conn = await getConnection();
+	return (await conn.query(query)).records[0].Id;
+}
+
+*/
+
+export async function getDefaultOrg(): Promise<string> {
+  const targetOrgOutput = await runCmd('npx sf config:get target-org --json');
+  const result: Config = JSON.parse(targetOrgOutput);
+  return result.result[0].value;
+}
+
 export async function getDefaultDevhub(spinner: Ora): Promise<string> {
   const devhubUsernameOutput = await runCmd(
     'npx sf config:get target-dev-hub --json'
@@ -13,7 +36,7 @@ export async function getDefaultDevhub(spinner: Ora): Promise<string> {
   const result: Config = JSON.parse(devhubUsernameOutput);
   const devHub = result.result[0].value;
   if (devHub) spinner.succeed();
-  return result.result[0].value;
+  return devHub;
 }
 
 export async function chooseDevhub(spinner: Ora): Promise<string> {

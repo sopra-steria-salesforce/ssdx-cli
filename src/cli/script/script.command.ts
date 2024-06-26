@@ -4,6 +4,7 @@ import JsCommand from './js/js.command.js';
 import SlotOption from '../../dto/ssdx-config-slot.dto.js';
 import * as apex from './apex/apex.command.js';
 import * as js from './js/js.command.js';
+import { getDefaultOrg } from '../create/steps/devhub.js';
 
 export default class ScriptCommand {
   program: Command;
@@ -18,6 +19,7 @@ export default class ScriptCommand {
     this.program
       .command('script')
       .description('Run Apex and js scripts defined in ssdx-config.json')
+      .option('--target-org', 'The org to run the scripts on')
       .option('--init', 'Runs before dependencies', false)
       .option('--pre_deploy', 'Runs before deployment', false)
       .option('--post_deploy', 'Runs after deployment', false)
@@ -28,6 +30,7 @@ export default class ScriptCommand {
 }
 
 export async function runScripts(options: SlotOption) {
+  options.targetOrg = options.targetOrg ?? (await getDefaultOrg());
   await apex.runScript(options);
   await js.runScripts(options);
 }
