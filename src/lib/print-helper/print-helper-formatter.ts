@@ -98,6 +98,10 @@ function getFrameOptions(text: string, subText?: string): frameOptions {
 
 function setColor(text: string, color: Color): string {
   switch (color) {
+    case Color.bold:
+      return colors.bold(text);
+    case Color.underline:
+      return colors.underline(text);
     case Color.black:
       return colors.black(text);
     case Color.red:

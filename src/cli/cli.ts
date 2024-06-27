@@ -1,8 +1,7 @@
 import { Command } from 'commander';
 import CreateCommand from './create/create.command.js';
 import AuthCommand from './auth/auth.command.js';
-import UserCommand from './user/user.command.js';
-import ScriptCommand from './script/script.command.js';
+import { ResourceCommand } from './resource-assignment-manager/resource.command.js';
 
 class cli {
   protected static program = new Command();
@@ -10,8 +9,7 @@ class cli {
   constructor() {
     new AuthCommand(cli.program);
     new CreateCommand(cli.program);
-    new UserCommand(cli.program);
-    new ScriptCommand(cli.program);
+    new ResourceCommand(cli.program);
   }
 
   public run(): void {

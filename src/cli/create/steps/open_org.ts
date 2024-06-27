@@ -20,7 +20,7 @@ class OrgOpener {
     await run(
       'npx sf org:open',
       ['--target-org', this.options.scratchOrgName],
-      Output.Supressed
+      Output.SupressedExceptError
     );
 
     const spinner = ora('Opened Org Successfully').start();

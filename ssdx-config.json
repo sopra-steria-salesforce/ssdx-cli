@@ -1,36 +1,53 @@
 {
   "default_config": "config/project-scratch-def.json",
-  "init": {
-    "permissions": {
-      "permsets": [],
-      "licenses": ["ServiceUserPsl"]
+  "pre_dependencies": [
+    {
+      "type": "permissionSetLicense",
+      "value": "ServiceUserPsl"
     },
-    "scripts": {
-      "apex": ["bin/apex/enableChatUser.apex"],
-      "js": []
+    {
+      "type": "apex",
+      "value": "bin/apex/enableChatUser.apex"
     },
-    "metadata": ["bin/metadata/groups/pre_dep.group-meta.xml"]
-  },
-  "pre_deploy": {
-    "permissions": {
-      "permsets": [],
-      "licenses": []
+    {
+      "type": "metadata",
+      "value": "bin/metadata/groups/pre_dep.group-meta.xml"
+    }
+  ],
+  "pre_deploy": [
+    {
+      "type": "js",
+      "value": "bin/js/test.cjs"
     },
-    "scripts": {
-      "apex": [],
-      "js": ["bin/js/test.cjs"]
+    {
+      "type": "metadata",
+      "value": "bin/metadata/labels/pre_deploy.labels-meta.xml"
     },
-    "metadata": ["bin/metadata/labels/pre_deploy.labels-meta.xml"]
-  },
-  "post_deploy": {
-    "permissions": {
-      "permsets": ["test"],
-      "licenses": ["SlackServiceUserPsl"]
+    {
+      "type": "metadata",
+      "value": "bin"
+    }
+  ],
+  "post_deploy": [
+    {
+      "type": "permissionSet",
+      "value": "test"
     },
-    "scripts": {
-      "apex": ["bin/apex/addToGroup.apex"],
-      "js": []
+    {
+      "type": "permissionSetLicense",
+      "value": "SlackServiceUserPsl"
     },
-    "metadata": ["bin/metadata/permissionsets/"]
-  }
+    {
+      "type": "apex",
+      "value": "bin/apex/addToGroup.apex"
+    },
+    {
+      "type": "metadata",
+      "value": "bin/metadata/permissionsets/"
+    },
+    {
+      "type": "metadata",
+      "value": "force-app/main/default/labels"
+    }
+  ]
 }

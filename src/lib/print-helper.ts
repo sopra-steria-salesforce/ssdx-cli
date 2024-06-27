@@ -60,6 +60,8 @@ export function code(text: string): void {
 }
 
 export enum Color {
+  bold,
+  underline,
   black,
   red,
   green,

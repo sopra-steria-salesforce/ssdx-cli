@@ -1,6 +1,5 @@
 import { spawn } from 'promisify-child-process';
 import * as print from './print-helper.js';
-import { exit } from 'process';
 
 // TODO: implement default spinner
 // TODO: implement retry on error
@@ -8,7 +7,7 @@ import { exit } from 'process';
 export async function run(
   cmd: string,
   args: string[] = [],
-  outputSettings: Output = Output.Supressed
+  outputSettings: Output = Output.SupressedExceptError
 ): Promise<Result> {
   const settings = getOutputMethod(outputSettings);
   const child = spawn(cmd, args, {
@@ -22,11 +21,13 @@ export async function run(
 
   // run cmd
   const output = await child.catch(error => {
-    print.error('\n\nERROR RUNNING CODE:');
-    print.code(cmd + ' ' + args.join(' '));
-    print.error('\nERROR MESSAGE:');
-    print.error(error as string);
-    exit(1);
+    if (settings.printError) {
+      print.error('\n\nERROR RUNNING CODE:');
+      print.code(cmd + ' ' + args.join(' '));
+      print.error('\nERROR MESSAGE:');
+      print.error(error as string);
+    }
+    throw new Error(error as string);
   });
 
   if (settings && settings.clearOutput) clearOutput(output.stdout as string);
@@ -40,6 +41,7 @@ export async function run(
 
 export enum Output {
   Supressed,
+  SupressedExceptError,
   Live,
   LiveAndClear,
 }
@@ -55,6 +57,8 @@ function getOutputMethod(type?: Output): OutputMethod {
     default:
     case Output.Supressed:
       return { printOutput: false, printError: false, clearOutput: false };
+    case Output.SupressedExceptError:
+      return { printOutput: false, printError: true, clearOutput: false };
     case Output.Live:
       return { printOutput: true, printError: true, clearOutput: false };
     case Output.LiveAndClear:

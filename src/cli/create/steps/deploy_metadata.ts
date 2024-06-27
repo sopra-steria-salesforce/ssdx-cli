@@ -52,7 +52,7 @@ class Metadata {
     await run(
       'npx sf project:reset:tracking',
       ['--target-org', this.alias, '--no-prompt'],
-      Output.Supressed
+      Output.SupressedExceptError
     );
   }
 

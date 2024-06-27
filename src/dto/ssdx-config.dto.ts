@@ -1,22 +1,19 @@
 export default interface ssdxConfig {
   default_config: string;
-  init: Types;
-  pre_deploy: Types;
-  post_deploy: Types;
+  pre_dependencies: Resource[];
+  pre_deploy: Resource[];
+  post_deploy: Resource[];
 }
 
-interface Types {
-  permissions: Permissions;
-  scripts: Scripts;
-  metadata: string[];
+export interface Resource {
+  type: ResourceType;
+  value: string;
 }
 
-interface Permissions {
-  permsets: string[];
-  licenses: string[];
-}
-
-interface Scripts {
-  apex: string[];
-  js: string[];
+export enum ResourceType {
+  APEX = 'apex',
+  JS = 'js',
+  PERMISSION_SET = 'permissionSet',
+  LICENSE = 'permissionSetLicense',
+  METADATA = 'metadata',
 }
