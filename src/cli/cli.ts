@@ -16,7 +16,7 @@ class cli {
     cli.program
       .name('ssdx-cli')
       .description('Salesforce DX cli helper tool')
-      .version('0.8.0'); // TODO: fetch from package.json
+      .version(process.env.npm_package_version as string);
 
     cli.program.parse();
   }
