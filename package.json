@@ -10,9 +10,11 @@
     "ssdx": "build/index.js"
   },
   "scripts": {
-    "build": "tsc --project tsconfig.build.json",
-    "build:publish": "npm run build && npm publish",
+    "build": "tsc --project tsconfig.build.json && tsc-alias -p tsconfig.build.json",
+    "publish": "npm publish",
+    "build:publish": "npm run build && npm run publish",
     "bin": "tsx ./src/index.ts",
+    "bin:js": "npm run build && node ./build/index.js",
     "clean": "rm -rf ./lib/",
     "cm": "cz",
     "lint": "eslint ./src/ --fix",
@@ -67,6 +69,7 @@
     "semantic-release": "^24.0.0",
     "ts-jest": "^29.1.5",
     "ts-node": "^10.9.2",
+    "tsc-alias": "^1.8.10",
     "tsx": "^4.15.7",
     "typescript": "^5.5.2"
   },
