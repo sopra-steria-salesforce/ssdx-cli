@@ -5,6 +5,8 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "search.exclude": {
-    "**/build/*": true
-  }
+    "**/build/*": true,
+    "**/build/**/*": true
+  },
+  "editor.fontLigatures": false
 }
