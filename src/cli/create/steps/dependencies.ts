@@ -1,9 +1,9 @@
 import ora from 'ora';
 import CreateOptions from '../dto/create-options.dto.js';
 import fs from 'fs';
-import * as print from '../../../lib/print-helper.js';
-import schema from '../dto/sfdx-project.dto.js';
-import { run, Output } from '../../../lib/command-helper.js';
+import * as print from 'lib/print-helper.js';
+import { run, Output } from 'lib/command-helper.js';
+import SfdxProject from '../dto/sfdx-project.dto.js';
 
 export async function installDependencies(
   options: CreateOptions
@@ -13,7 +13,7 @@ export async function installDependencies(
 }
 
 class Dependencies {
-  sfdxProject!: schema;
+  sfdxProject!: SfdxProject;
   options!: CreateOptions;
 
   constructor(options: CreateOptions) {

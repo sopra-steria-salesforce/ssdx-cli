@@ -1,13 +1,10 @@
-import { Output, run } from '../../lib/command-helper.js';
+import { Output, run } from 'lib/command-helper.js';
 import ora, { Ora } from 'ora';
-import * as print from '../../lib/print-helper.js';
-import ssdxConfig, {
-  Resource,
-  ResourceType,
-} from '../../dto/ssdx-config.dto.js';
+import * as print from 'lib/print-helper.js';
+import ssdxConfig, { Resource, ResourceType } from 'dto/ssdx-config.dto.js';
 import { SlotOption } from './dto/resource-config.dto.js';
-import { fetchConfig } from '../../lib/config/ssdx-config.js';
-import { setColor } from '../../lib/print-helper/print-helper-formatter.js';
+import { fetchConfig } from 'lib/config/ssdx-config.js';
+import { setColor } from 'lib/print-helper/print-helper-formatter.js';
 import pad from 'pad';
 import { exit } from 'process';
 

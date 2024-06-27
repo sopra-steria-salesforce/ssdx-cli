@@ -1,5 +1,5 @@
 import fs from 'fs';
-import ssdxConfig from '../../dto/ssdx-config.dto.js';
+import ssdxConfig from 'dto/ssdx-config.dto.js';
 
 export function fetchConfig(): ssdxConfig {
   try {

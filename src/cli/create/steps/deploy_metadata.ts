@@ -1,7 +1,7 @@
 import ora from 'ora';
 import CreateOptions from '../dto/create-options.dto.js';
-import * as print from '../../../lib/print-helper.js';
-import { run, Output } from '../../../lib/command-helper.js';
+import * as print from 'lib/print-helper.js';
+import { run, Output } from 'lib/command-helper.js';
 
 export async function deployMetadata(options: CreateOptions): Promise<void> {
   const metadata = new Metadata(options);

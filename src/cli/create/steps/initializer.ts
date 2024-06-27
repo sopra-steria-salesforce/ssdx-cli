@@ -1,7 +1,7 @@
 import { Duration } from '@salesforce/kit';
 import fs from 'node:fs';
 import path from 'node:path';
-import * as print from '../../../lib/print-helper.js';
+import * as print from 'lib/print-helper.js';
 import { input, password } from '@inquirer/prompts';
 import select from '@inquirer/select';
 import CreateOptions from '../dto/create-options.dto.js';
@@ -9,7 +9,7 @@ import { chooseDevhub, getDefaultDevhub } from './devhub.js';
 import { Org } from '@salesforce/core';
 import { makeDirectory } from 'make-dir';
 import ora from 'ora';
-import * as ssdx from '../../../lib/config/ssdx-config.js';
+import * as ssdx from 'lib/config/ssdx-config.js';
 
 const CONFIG_FOLDER_PATH = './config/';
 

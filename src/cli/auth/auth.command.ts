@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import * as print from '../../lib/print-helper.js';
+import * as print from 'lib/print-helper.js';
 import AuthOptions from './dto/auth-options.dto.js';
 
 export default class AuthCommand {

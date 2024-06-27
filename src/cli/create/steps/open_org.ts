@@ -1,6 +1,6 @@
-import * as print from '../../../lib/print-helper.js';
+import * as print from 'lib/print-helper.js';
 import CreateOptions from '../dto/create-options.dto.js';
-import { run, Output } from '../../../lib/command-helper.js';
+import { run, Output } from 'lib/command-helper.js';
 import ora from 'ora';
 
 export async function openOrg(options: CreateOptions): Promise<void> {

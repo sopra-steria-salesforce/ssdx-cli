@@ -1,6 +1,6 @@
 import colors from 'colors/safe.js';
 import pad from 'pad';
-import { Color } from '../print-helper.js';
+import { Color } from 'lib/print-helper.js';
 
 export { frame, getFrameOptions, setColor };
 

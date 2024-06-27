@@ -3,7 +3,7 @@ import { execSync } from 'node:child_process';
 import select from '@inquirer/select';
 import colors from 'colors/safe.js';
 import { Config } from '../dto/create-config.dto.js';
-import { runCmd } from '../../../lib/command-helper.js';
+import { runCmd } from 'lib/command-helper.js';
 import { Ora } from 'ora';
 
 // TODO: change to native query method

@@ -5,8 +5,8 @@ import { installDependencies } from './steps/dependencies.js';
 import { initialize } from './steps/initializer.js';
 import { clearingTracking, deployMetadata } from './steps/deploy_metadata.js';
 import { openOrg } from './steps/open_org.js';
-import { getSlotOptions } from '../resource-assignment-manager/dto/resource-config.dto.js';
-import { resourceAssignmentManager } from '../resource-assignment-manager/resource.command.js';
+import { getSlotOptions } from 'cli/resource-assignment-manager/dto/resource-config.dto.js';
+import { resourceAssignmentManager } from 'cli/resource-assignment-manager/resource.command.js';
 
 export default class CreateCommand {
   options!: CreateOptions;

@@ -1,9 +1,9 @@
 import ora, { Ora } from 'ora';
-import * as print from '../../../lib/print-helper.js';
+import * as print from 'lib/print-helper.js';
 import CreateOptions from '../dto/create-options.dto.js';
 // import { ScratchOrgCreateResult, scratchOrgCreate } from '@salesforce/core';
 // import { exit } from 'node:process';
-import { run, Output } from '../../../lib/command-helper.js';
+import { run, Output } from 'lib/command-helper.js';
 import { Org } from '../dto/org.dto.js';
 
 export async function createScratchOrg(options: CreateOptions): Promise<void> {

@@ -1,6 +1,6 @@
 import { Command } from 'commander';
 import { SlotOption } from './dto/resource-config.dto.js';
-import { getDefaultOrg } from '../create/steps/devhub.js';
+import { getDefaultOrg } from 'cli/create/steps/devhub.js';
 import { ResourceAssignmentManager } from './resource-assignment-manager.js';
 
 const NAME = 'Resource Assignment Manager';
