@@ -117,6 +117,7 @@ export class ResourceAssignmentManager {
     }
   }
 
+  // TODO: return value (including error)
   public async runApex(resource: Resource): Promise<void> {
     await run(
       'npx sf apex:run',

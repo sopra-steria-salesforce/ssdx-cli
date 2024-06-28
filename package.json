@@ -1,6 +1,6 @@
 {
   "name": "ssdx-cli",
-  "version": "0.7.0",
+  "version": "0.8.1",
   "description": "A template for creating npm packages using TypeScript and VSCode",
   "exports": "./build/index.js",
   "typings": "./build/index.d.ts",
@@ -11,8 +11,7 @@
   },
   "scripts": {
     "build": "tsc --project tsconfig.build.json && tsc-alias -p tsconfig.build.json",
-    "publish": "npm publish",
-    "build:publish": "npm run build && npm run publish",
+    "build:publish": "npm run build && npm publish",
     "bin": "tsx ./src/index.ts",
     "bin:js": "npm run build && node ./build/index.js",
     "clean": "rm -rf ./lib/",
