@@ -35,6 +35,10 @@ export class ResourceAssignmentManager {
       this.resources = [...this.resources, ...this.ssdxConfig.post_deploy];
       this.resourceTypes.push('Post-deploy');
     }
+    if (this.options.postInstall) {
+      this.resources = [...this.resources, ...this.ssdxConfig.post_install];
+      this.resourceTypes.push('Post-package install');
+    }
   }
 
   private hasResources(): boolean {
@@ -76,15 +80,15 @@ export class ResourceAssignmentManager {
     }
     type = pad(type + ':', 16, ' ');
     type = type.toUpperCase();
-    return setColor(type, print.Color.bold);
+    return setColor(type, [print.Color.bold]);
   }
   private getFileName(resource: Resource) {
     const file = resource.value.split('/').pop() ?? '';
-    return setColor(file, print.Color.green);
+    return setColor(file, [print.Color.green]);
   }
   private getPath(resource: Resource): string {
     let path = resource.value.split('/').slice(0, -1).join('/');
-    path = setColor(path, print.Color.blue);
+    path = setColor(path, [print.Color.blue]);
     return path ? ` (from ${path})` : '';
   }
   private stopSpinner(): void {
@@ -93,7 +97,7 @@ export class ResourceAssignmentManager {
   }
   private errorSpinner(errorMsg: string): void {
     if (!this.spinner.isSpinning) return;
-    this.spinner.suffixText = setColor(errorMsg, print.Color.red);
+    this.spinner.suffixText = setColor(errorMsg, [print.Color.red]);
     this.spinner.fail();
     exit(1);
   }

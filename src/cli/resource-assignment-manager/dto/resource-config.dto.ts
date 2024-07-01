@@ -9,6 +9,8 @@ export interface SlotOption {
   preDependencies: boolean;
   preDeploy: boolean;
   postDeploy: boolean;
+  postInstall: boolean;
+  showOutput: boolean;
 }
 
 export function getSlotOptions(targetOrg: string): SlotOptions {
@@ -28,4 +30,6 @@ export const emptySlotOption: SlotOption = {
   preDependencies: false,
   preDeploy: false,
   postDeploy: false,
+  postInstall: false,
+  showOutput: false,
 };

@@ -20,8 +20,7 @@ export function header(
 
   text = frame(frameOptions);
   text = colors.bold(colors.black(text));
-  text = setColor(text, color);
-  text = setColor(text, bgColor);
+  text = setColor(text, [color, bgColor]);
   info(text);
 }
 
@@ -40,8 +39,7 @@ export function subheader(
 
   text = frame(frameOptions);
   text = colors.bold(colors.black(text));
-  text = setColor(text, color);
-  text = setColor(text, bgColor);
+  text = setColor(text, [color, bgColor]);
   info(text);
 }
 

@@ -3,6 +3,7 @@ export default interface ssdxConfig {
   pre_dependencies: Resource[];
   pre_deploy: Resource[];
   post_deploy: Resource[];
+  post_install: Resource[];
 }
 
 export interface Resource {

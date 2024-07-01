@@ -49,5 +49,6 @@
       "type": "metadata",
       "value": "force-app/main/default/labels"
     }
-  ]
+  ],
+  "post_install": []
 }

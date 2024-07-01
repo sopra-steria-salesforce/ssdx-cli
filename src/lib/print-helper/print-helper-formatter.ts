@@ -96,7 +96,14 @@ function getFrameOptions(text: string, subText?: string): frameOptions {
   };
 }
 
-function setColor(text: string, color: Color): string {
+function setColor(text: string, colors: Color[]): string {
+  for (const color of colors) {
+    text = setSingleColor(text, color);
+  }
+  return text;
+}
+
+function setSingleColor(text: string, color: Color): string {
   switch (color) {
     case Color.bold:
       return colors.bold(text);
