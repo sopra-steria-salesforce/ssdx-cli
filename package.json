@@ -60,7 +60,6 @@
     "ora": "8.0.1",
     "pad": "^3.2.0",
     "pino": "^9.2.0",
-    "pino-pretty": "^11.2.1",
     "promisify-child-process": "^4.1.2"
   },
   "devDependencies": {

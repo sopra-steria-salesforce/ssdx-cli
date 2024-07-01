@@ -65,7 +65,7 @@ export class Command {
       });
   }
   private async runCmd() {
-    logger.error(`Running command: ${this.cmd} ${this.args.join(' ')}`);
+    logger.info(`Running command: ${this.cmd} ${this.args.join(' ')}`);
     await this.child.on('exit', code => {
       this.output.code = code as number;
       if (this.output.code !== 0) {
@@ -78,6 +78,7 @@ export class Command {
     this.child.stderr &&
       this.child.stderr.on('data', data => {
         const dataStr: Buffer = data;
+        logger.error(dataStr.toString());
         this.output.stderr += dataStr.toString();
       });
   }

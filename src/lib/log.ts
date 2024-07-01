@@ -4,9 +4,6 @@ import moment from 'moment';
 const cwd = process.cwd();
 const currentDate = moment().format('YYYY_MM_DD');
 
-// });
-// pino(transport);
-
 export const logger = pino(
   {
     level: process.env.PINO_LOG_LEVEL || 'info',
