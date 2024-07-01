@@ -1,7 +1,6 @@
 import * as print from 'lib/print-helper.js';
 import CreateOptions from '../dto/create-options.dto.js';
-import { run, Output } from 'lib/command-helper.js';
-import ora from 'ora';
+import { run, OutputType } from 'lib/command-helper.js';
 
 export async function openOrg(options: CreateOptions): Promise<void> {
   const org = new OrgOpener(options);
@@ -17,13 +16,11 @@ class OrgOpener {
 
   public async open(): Promise<void> {
     print.subheader('Opening Scratch Org');
-    await run(
-      'npx sf org:open',
-      ['--target-org', this.options.scratchOrgName],
-      Output.SupressedExceptError
-    );
-
-    const spinner = ora('Opened Org Successfully').start();
-    spinner.succeed();
+    await run({
+      cmd: 'npx sf org:open',
+      args: ['--target-org', this.options.scratchOrgName],
+      outputType: OutputType.Spinner,
+      spinnerText: 'Opened Org Successfully',
+    });
   }
 }

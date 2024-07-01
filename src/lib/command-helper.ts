@@ -1,84 +1,162 @@
 import { spawn } from 'promisify-child-process';
 import * as print from './print-helper.js';
+import ora, { Ora } from 'ora';
+import { setColor } from './print-helper/print-helper-formatter.js';
+import { exit } from 'process';
+import { logger } from './log.js';
 
 // TODO: implement default spinner
 // TODO: implement retry on error
 
-export async function run(
-  cmd: string,
-  args: string[] = [],
-  outputSettings: Output = Output.SupressedExceptError
-): Promise<Result> {
-  const settings = getOutputMethod(outputSettings);
-  const child = spawn(cmd, args, {
-    shell: true,
-    encoding: 'utf8',
-  });
+export async function run(options: CmdOption): Promise<CmdResult> {
+  const cmd = new Command(options);
+  await cmd.run();
+  return cmd.output;
+}
 
-  // print output during run
-  if (settings && settings.printOutput)
-    child.stdout && child.stdout.pipe(process.stdout);
+export class Command {
+  cmd: string;
+  args: string[];
+  child;
+  output: CmdResult = { stdout: '', stderr: '', code: 0 };
+  outputType: OutputType;
+  spinner: Ora;
+  spinnerText: string;
+  retryOnFailure?: boolean;
+  outputError: boolean;
+  exitOnError: boolean;
 
-  // run cmd
-  const output = await child.catch(error => {
-    if (settings.printError) {
-      print.error('\n\nERROR RUNNING CODE:');
-      print.code(cmd + ' ' + args.join(' '));
-      print.error('\nERROR MESSAGE:');
-      print.error(error as string);
+  constructor(options: CmdOption) {
+    this.cmd = options.cmd;
+    this.args = options.args ?? [];
+    this.child = spawn(this.cmd, this.args, {
+      shell: true,
+      encoding: 'utf8',
+    });
+    this.spinner = ora();
+    this.outputType = options.outputType ?? OutputType.Silent;
+    this.retryOnFailure = options.retryOnFailure;
+    this.outputError = options.outputError ?? true;
+    this.exitOnError = options.exitOnError ?? true;
+
+    // spinner
+    this.spinnerText = options.spinnerText ?? this.cmd;
+    if (this.showSpinner) this.spinner = ora(this.spinnerText).start();
+  }
+
+  /* -------------------------------------------------------------------------- */
+  /*                                 run command                                */
+  /* -------------------------------------------------------------------------- */
+
+  public async run(): Promise<void> {
+    this.handleStdout();
+    this.handleStderr();
+    await this.runCmd();
+    this.clearOutput();
+  }
+  private handleStdout() {
+    if (this.liveOutput) {
+      this.child.stdout && this.child.stdout.pipe(process.stdout);
     }
-    throw new Error(error as string);
-  });
+    this.child.stdout &&
+      this.child.stdout.on('data', data => {
+        const dataStr: Buffer = data;
+        this.output.stdout += dataStr.toString();
+      });
+  }
+  private async runCmd() {
+    logger.error(`Running command: ${this.cmd} ${this.args.join(' ')}`);
+    await this.child.on('exit', code => {
+      this.output.code = code as number;
+      if (this.output.code !== 0) {
+        this.spinnerError();
+        this.printError();
+      }
+    });
+  }
+  private handleStderr() {
+    this.child.stderr &&
+      this.child.stderr.on('data', data => {
+        const dataStr: Buffer = data;
+        this.output.stderr += dataStr.toString();
+      });
+  }
+  private spinnerError() {
+    if (this.showSpinner) {
+      this.spinner.suffixText =
+        '\n' + setColor(this.output.stdout, [print.Color.red]);
+      this.spinner.fail();
+      this.spinner = ora();
 
-  if (settings && settings.clearOutput) clearOutput(output.stdout as string);
+      if (this.exitOnError) exit(0);
+    }
+  }
+  private printError() {
+    if (this.outputError && !this.showSpinner) {
+      print.error('\n\nERROR RUNNING CODE:');
+      print.code(this.cmd + ' ' + this.args.join(' '));
+      print.error('\nERROR MESSAGE:');
+      print.error(this.output.stdout);
+      if (this.exitOnError) exit(0);
+    }
+  }
+  private clearOutput() {
+    if (this.shouldClearOutput) {
+      const lines = this.output.stdout.split(/\r\n|\r|\n/).length;
+      clearNLines(lines);
+    }
+  }
 
-  return {
-    stdout: output.stdout as string,
-    stderr: output.stderr as string,
-    code: output.code as number,
-  };
-}
+  /* -------------------------------------------------------------------------- */
+  /*                                   getters                                  */
+  /* -------------------------------------------------------------------------- */
 
-export enum Output {
-  Supressed,
-  SupressedExceptError,
-  Live,
-  LiveAndClear,
-}
-
-export interface OutputMethod {
-  printOutput: boolean;
-  printError: boolean;
-  clearOutput: boolean;
-}
-
-function getOutputMethod(type?: Output): OutputMethod {
-  switch (type) {
-    default:
-    case Output.Supressed:
-      return { printOutput: false, printError: false, clearOutput: false };
-    case Output.SupressedExceptError:
-      return { printOutput: false, printError: true, clearOutput: false };
-    case Output.Live:
-      return { printOutput: true, printError: true, clearOutput: false };
-    case Output.LiveAndClear:
-      return { printOutput: true, printError: true, clearOutput: true };
+  get isSilent(): boolean {
+    return this.outputType == OutputType.Silent;
+  }
+  get endOutput(): boolean {
+    return this.outputType == OutputType.OutputEnd;
+  }
+  get liveOutput(): boolean {
+    return (
+      this.outputType === OutputType.OutputLive ||
+      this.outputType === OutputType.OutputLiveAndClear
+    );
+  }
+  get shouldClearOutput(): boolean {
+    return this.outputType == OutputType.OutputLiveAndClear;
+  }
+  get showSpinner(): boolean {
+    return this.outputType == OutputType.Spinner;
   }
 }
 
-export interface Result {
+export interface CmdOption {
+  cmd: string;
+  args?: string[];
+  outputType?: OutputType;
+  spinnerText?: string;
+  retryOnFailure?: boolean;
+  exitOnError?: boolean;
+  outputError?: boolean;
+}
+
+export enum OutputType {
+  Silent,
+  OutputEnd,
+  OutputLive,
+  OutputLiveAndClear,
+  Spinner,
+}
+
+export interface CmdResult {
   stdout: string;
   stderr: string;
   code: number;
 }
 
-function clearOutput(output: string): void {
-  const lines = output.split(/\r\n|\r|\n/).length;
-  clearLastLines(lines);
-}
-
-function clearLastLines(count: number): void {
-  process.stdout.moveCursor(0, -count);
+function clearNLines(N: number): void {
+  process.stdout.moveCursor(0, -N);
   process.stdout.clearScreenDown();
 }
 

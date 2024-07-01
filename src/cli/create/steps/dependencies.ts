@@ -2,7 +2,7 @@ import ora from 'ora';
 import CreateOptions from '../dto/create-options.dto.js';
 import fs from 'fs';
 import * as print from 'lib/print-helper.js';
-import { run, Output } from 'lib/command-helper.js';
+import { run, OutputType } from 'lib/command-helper.js';
 import SfdxProject from '../dto/sfdx-project.dto.js';
 
 export async function installDependencies(
@@ -46,9 +46,9 @@ class Dependencies {
       return;
     }
 
-    await run(
-      'npx sfp dependency:install',
-      [
+    await run({
+      cmd: 'npx sfp dependency:install',
+      args: [
         '--installationkeys',
         this.packageKeys,
         '--targetusername',
@@ -56,8 +56,8 @@ class Dependencies {
         '--targetdevhubusername',
         this.devhub,
       ],
-      Output.LiveAndClear
-    );
+      outputType: OutputType.OutputLiveAndClear,
+    });
 
     console.log('');
     const spinner = ora('Installed Dependencies Successfully').start();

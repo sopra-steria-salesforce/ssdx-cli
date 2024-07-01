@@ -2,10 +2,6 @@
   "default_config": "config/project-scratch-def.json",
   "pre_dependencies": [
     {
-      "type": "permissionSetLicense",
-      "value": "ServiceUserPsl"
-    },
-    {
       "type": "apex",
       "value": "bin/apex/enableChatUser.apex"
     },

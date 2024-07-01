@@ -1,7 +1,7 @@
 import ora from 'ora';
 import CreateOptions from '../dto/create-options.dto.js';
 import * as print from 'lib/print-helper.js';
-import { run, Output } from 'lib/command-helper.js';
+import { run, OutputType } from 'lib/command-helper.js';
 
 export async function deployMetadata(options: CreateOptions): Promise<void> {
   const metadata = new Metadata(options);
@@ -28,9 +28,9 @@ class Metadata {
       return;
     }
     // TODO: move to new metadata class
-    await run(
-      'npx sf project:deploy:start',
-      [
+    await run({
+      cmd: 'npx sf project:deploy:start',
+      args: [
         '--wait',
         '30',
         '--target-org',
@@ -38,8 +38,8 @@ class Metadata {
         '--ignore-conflicts',
         '--concise',
       ],
-      Output.LiveAndClear
-    );
+      outputType: OutputType.OutputLiveAndClear,
+    });
 
     console.log('');
     const spinner = ora('Deployed Metadata Successfully').start();
@@ -47,13 +47,12 @@ class Metadata {
   }
 
   public async resetTracking(): Promise<void> {
-    const spinner = ora('Resetting Metadata Tracking').start();
-    spinner.succeed();
-    await run(
-      'npx sf project:reset:tracking',
-      ['--target-org', this.alias, '--no-prompt'],
-      Output.SupressedExceptError
-    );
+    await run({
+      cmd: 'npx sf project:reset:tracking',
+      args: ['--target-org', this.alias, '--no-prompt'],
+      spinnerText: 'Resetting Metadata Tracking',
+      outputType: OutputType.Spinner,
+    });
   }
 
   private get alias(): string {
