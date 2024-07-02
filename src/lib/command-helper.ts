@@ -31,7 +31,18 @@ export class Command {
       encoding: 'utf8',
     });
 
-    if (this.showSpinner) this.spinner = ora(this.spinnerText).start();
+    if (this.showSpinner) this.startSpinner();
+    if (this.showHeader) this.printHeader();
+  }
+
+  private startSpinner() {
+    this.spinner = ora(this.spinnerText).start();
+  }
+
+  private printHeader() {
+    print.info(this.spinnerText, false);
+    print.printSeparator();
+    print;
   }
 
   /* -------------------------------------------------------------------------- */
@@ -49,6 +60,9 @@ export class Command {
   }
   private get spinnerText() {
     return this.options.spinnerText ?? this.options.cmd;
+  }
+  get showHeader(): boolean {
+    return this.typeIs(OutputType.OutputLiveWithHeader);
   }
   get showSpinner(): boolean {
     return (
@@ -83,7 +97,10 @@ export class Command {
     );
   }
   get liveOutput(): boolean {
-    return this.typeIs(OutputType.OutputLive);
+    return (
+      this.typeIs(OutputType.OutputLive) ||
+      this.typeIs(OutputType.OutputLiveWithHeader)
+    );
   }
   get customPipeOutput(): boolean {
     return this.typeIs(OutputType.OutputLiveAndClear);
@@ -160,11 +177,13 @@ export class Command {
   private printError() {
     if (!this.outputError || this.showSpinner) return;
     print.printSeparator();
-    print.error('\nERROR! See message below:\n');
-    print.error(this.output.stdout + '\n');
+    print.error('\nERROR! See message below:\n', false);
+    print.error(this.output.stdout + '\n', false);
 
     if (this.exitOnError) exit(0);
   }
+  // TODO: calculate the real amount when process.stdout.col is less then a strings width
+  // TODO: get output from native pipe to clear
   private clearOutput() {
     if (this.shouldClearOutput) {
       const lines = this.output.stdout.split(/\r\n|\r|\n/).length;
@@ -177,7 +196,7 @@ export class Command {
   private printOutput() {
     if (this.endOutput && this.output.code === 0) {
       print.printSeparator();
-      print.info(this.output.stdout + '\n');
+      print.info(this.output.stdout + '\n', false);
     }
   }
 }
@@ -196,6 +215,7 @@ export enum OutputType {
   Silent,
   OutputEnd,
   OutputLive,
+  OutputLiveWithHeader,
   OutputLiveAndClear,
   Spinner,
   SpinnerAndOutput,
@@ -222,8 +242,8 @@ export async function runCmd(
     shell: true,
     encoding: 'utf8',
   }).catch(error => {
-    print.error('Error running command:');
-    print.code(`${cmd} ${args.join(' ')}`);
+    print.error('Error running command:', false);
+    print.code(`${cmd} ${args.join(' ')}`, false);
     throw error;
   });
 

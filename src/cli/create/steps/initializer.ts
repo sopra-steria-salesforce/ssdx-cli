@@ -112,7 +112,7 @@ class initializer {
 
   public async getDevhub(): Promise<void> {
     if (this.options.targetDevHub) return;
-    print.info('');
+    print.info('', false);
     const spinner = ora('Fetching DevHub info ...').start(); // TODO: print the devhub used
     this.options.targetDevHub =
       (await getDefaultDevhub(spinner)) || (await chooseDevhub(spinner));

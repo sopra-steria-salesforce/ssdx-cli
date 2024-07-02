@@ -14,8 +14,7 @@ export class ResourceAssignmentManager {
   ssdxConfig: SSDX = fetchConfig();
 
   constructor(options: SlotOption, targetOrg: string) {
-    logger.info('Running ResourceAssignmentManager');
-    logger.info(options);
+    logger.info(options, 'Running ResourceAssignmentManager');
     this.ssdxConfig.slotOption = options;
     this.options = options;
     this.targetOrg = targetOrg;
@@ -37,8 +36,10 @@ export class ResourceAssignmentManager {
 
   private async runResource(resource: Resource): Promise<void> {
     if (resource.skip) return this.skipResource(resource);
-    logger.info('Running resource:');
-    logger.info(resource);
+    logger.info(
+      resource,
+      'Running resource from resource-assignment-manager.ts'
+    );
     await run({
       cmd: resource.cmd,
       args: [...resource.args, this.targetOrg],
@@ -49,10 +50,9 @@ export class ResourceAssignmentManager {
   }
 
   private getOutputType(): OutputType | undefined {
-    return (
-      (this.options.showOutput && OutputType.SpinnerAndOutput) ||
-      OutputType.Spinner
-    );
+    if (this.options.ci) return OutputType.OutputLiveWithHeader;
+    if (this.options.showOutput) return OutputType.SpinnerAndOutput;
+    return OutputType.Spinner;
   }
 
   private skipResource(resource: Resource) {

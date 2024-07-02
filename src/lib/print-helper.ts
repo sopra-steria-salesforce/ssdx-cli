@@ -24,7 +24,7 @@ export function header(
   text = frame(frameOptions);
   text = colors.bold(colors.black(text));
   text = setColors(text, [color, bgColor]);
-  info(text);
+  info(text, false);
 }
 
 export function subheader(
@@ -43,25 +43,25 @@ export function subheader(
   text = frame(frameOptions);
   text = colors.bold(colors.black(text));
   text = setColors(text, [color, bgColor]);
-  info(text);
+  info(text, false);
 }
 
-export function info(text: string): void {
-  logger.info(text);
+export function info(text: string, log: boolean = true): void {
+  if (log) logger.info(text);
   console.log(text);
 }
-export function warning(text: string): void {
-  logger.warn(text);
+export function warning(text: string, log: boolean = true): void {
+  if (log) logger.warn(text);
   console.log(colors.yellow(text));
 }
-export function error(text: string): void {
-  logger.error(text);
+export function error(text: string, log: boolean = true): void {
+  if (log) logger.error(text);
   console.log(colors.bold(colors.red(text)));
 }
-export function code(text: string): void {
-  logger.info(text);
+export function code(text: string, log: boolean = true): void {
+  if (log) logger.info(text);
   console.log(colors.bgGreen(colors.black(text)));
 }
 export function printSeparator(): void {
-  info(pad('', process.stdout.columns, '-'));
+  info(pad('', process.stdout.columns, '-'), false);
 }
