@@ -2,7 +2,7 @@ import {
   ScratchOrgCreateOptions,
   ScratchOrgCreateResult,
 } from '@salesforce/core';
-import ssdxConfig from 'dto/ssdx-config.dto.js';
+import { SSDX } from 'lib/config/ssdx-config.js';
 
 //  TODO: convert to object with properties and methods, such as setAlias, chooseConfig, verifyPackageKey, findDevhub, setDevhub, setScratchOrgConfig
 export default interface CreateOptions {
@@ -16,5 +16,5 @@ export default interface CreateOptions {
   skipDependencies: string;
   skipDeployment: string;
   skipPermsetAssignment: string;
-  ssdxConfig: ssdxConfig;
+  ssdxConfig: SSDX;
 }

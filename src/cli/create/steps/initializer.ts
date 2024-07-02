@@ -66,8 +66,8 @@ class initializer {
   public async chooseConfig() {
     if (this.options.configFile) {
       return;
-    } else if (this.options.ssdxConfig.default_config) {
-      this.options.configFile = this.options.ssdxConfig.default_config;
+    } else if (this.options.ssdxConfig.config.default_config) {
+      this.options.configFile = this.options.ssdxConfig.config.default_config;
     } else {
       await this.configDecision();
     }

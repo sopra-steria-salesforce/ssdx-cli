@@ -1,4 +1,4 @@
-export default interface ssdxConfig {
+export interface ssdxConfig {
   default_config: string;
   pre_dependencies: Resource[];
   pre_deploy: Resource[];
@@ -8,7 +8,11 @@ export default interface ssdxConfig {
 
 export interface Resource {
   type: ResourceType;
+  cmd: string;
+  args: string[];
   value: string;
+  continue_on_error: boolean;
+  skip: boolean;
 }
 
 export enum ResourceType {

@@ -1,8 +1,9 @@
 import colors from 'colors/safe.js';
 import {
+  Color,
   frame,
   getFrameOptions,
-  setColor,
+  setColors,
 } from './print-helper/print-helper-formatter.js';
 
 export function header(
@@ -20,7 +21,7 @@ export function header(
 
   text = frame(frameOptions);
   text = colors.bold(colors.black(text));
-  text = setColor(text, [color, bgColor]);
+  text = setColors(text, [color, bgColor]);
   info(text);
 }
 
@@ -39,7 +40,7 @@ export function subheader(
 
   text = frame(frameOptions);
   text = colors.bold(colors.black(text));
-  text = setColor(text, [color, bgColor]);
+  text = setColors(text, [color, bgColor]);
   info(text);
 }
 
@@ -55,27 +56,4 @@ export function error(text: string): void {
 }
 export function code(text: string): void {
   console.log(colors.bgRed(colors.black(text)));
-}
-
-export enum Color {
-  bold,
-  underline,
-  black,
-  red,
-  green,
-  yellow,
-  blue,
-  magenta,
-  cyan,
-  white,
-  gray,
-  grey,
-  bgBlack,
-  bgBlue,
-  bgCyan,
-  bgGreen,
-  bgMagenta,
-  bgRed,
-  bgWhite,
-  bgYellow,
 }

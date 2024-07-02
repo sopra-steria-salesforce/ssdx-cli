@@ -1,8 +1,5 @@
 import colors from 'colors/safe.js';
 import pad from 'pad';
-import { Color } from 'lib/print-helper.js';
-
-export { frame, getFrameOptions, setColor };
 
 const CMD_WIDTH = process.stdout.columns;
 function full_width_length(edge: string): number {
@@ -16,7 +13,7 @@ function edge_length(edge: string): number {
   return edge.length * 2;
 }
 
-function frame(frameOptions: frameOptions): string {
+export function frame(frameOptions: frameOptions): string {
   const {
     text,
     subText,
@@ -82,7 +79,7 @@ interface frameOptions {
   edge: string;
 }
 
-function getFrameOptions(text: string, subText?: string): frameOptions {
+export function getFrameOptions(text: string, subText?: string): frameOptions {
   return {
     text: text,
     subText: subText,
@@ -96,11 +93,15 @@ function getFrameOptions(text: string, subText?: string): frameOptions {
   };
 }
 
-function setColor(text: string, colors: Color[]): string {
+// TODO: move to color-formatter.ts
+export function setColors(text: string, colors: Color[]): string {
   for (const color of colors) {
     text = setSingleColor(text, color);
   }
   return text;
+}
+export function setColor(text: string, color: Color): string {
+  return setSingleColor(text, color);
 }
 
 function setSingleColor(text: string, color: Color): string {
@@ -148,4 +149,27 @@ function setSingleColor(text: string, color: Color): string {
     default:
       return text;
   }
+}
+
+export enum Color {
+  bold,
+  underline,
+  black,
+  red,
+  green,
+  yellow,
+  blue,
+  magenta,
+  cyan,
+  white,
+  gray,
+  grey,
+  bgBlack,
+  bgBlue,
+  bgCyan,
+  bgGreen,
+  bgMagenta,
+  bgRed,
+  bgWhite,
+  bgYellow,
 }

@@ -1,142 +1,63 @@
 import { OutputType, run } from 'lib/command-helper.js';
-import ora, { Ora } from 'ora';
+import ora from 'ora';
 import * as print from 'lib/print-helper.js';
-import ssdxConfig, { Resource, ResourceType } from 'dto/ssdx-config.dto.js';
 import { SlotOption } from './dto/resource-config.dto.js';
-import { fetchConfig } from 'lib/config/ssdx-config.js';
-import { setColor } from 'lib/print-helper/print-helper-formatter.js';
+import { SSDX, fetchConfig } from 'lib/config/ssdx-config.js';
+// import {
+//   SSDX,
+//   fetchConfig,
+//   Resource,
+//   ResourceType,
+// } from 'lib/config/ssdx-config.js';
+import { Color, setColor } from 'lib/print-helper/print-helper-formatter.js';
 import pad from 'pad';
-import { exit } from 'process';
+import { Resource, ResourceType } from 'dto/ssdx-config.dto.js';
+// import { logger } from 'lib/log.js';
 
 export class ResourceAssignmentManager {
   options: SlotOption;
   targetOrg: string;
-  ssdxConfig: ssdxConfig = fetchConfig();
-  resources: Resource[] = [];
-  resourceTypes: string[] = [];
-  spinner: Ora = ora();
+  ssdxConfig: SSDX = fetchConfig();
 
   constructor(options: SlotOption, targetOrg: string) {
     this.options = options;
     this.targetOrg = targetOrg;
-    this.setResources();
-  }
-
-  private setResources(): void {
-    if (this.options.preDependencies) {
-      this.resources = [...this.resources, ...this.ssdxConfig.pre_dependencies];
-      this.resourceTypes.push('Pre-dependencies');
-    }
-    if (this.options.preDeploy) {
-      this.resources = [...this.resources, ...this.ssdxConfig.pre_deploy];
-      this.resourceTypes.push('Pre-deploy');
-    }
-    if (this.options.postDeploy) {
-      this.resources = [...this.resources, ...this.ssdxConfig.post_deploy];
-      this.resourceTypes.push('Post-deploy');
-    }
-    if (this.options.postInstall) {
-      this.resources = [...this.resources, ...this.ssdxConfig.post_install];
-      this.resourceTypes.push('Post-package install');
-    }
-  }
-
-  private hasResources(): boolean {
-    return this.resources.length > 0;
   }
 
   public async run(): Promise<void> {
-    if (!this.hasResources()) return;
+    if (!this.ssdxConfig.hasResources()) return;
 
     print.subheader(
-      this.resourceTypes.join(', ') + ' Steps',
+      this.ssdxConfig.resourceTypes.join(', ') + ' Steps',
       undefined,
-      print.Color.bgCyan
+      Color.bgCyan
     );
 
-    for (const resource of this.resources) {
+    for (const resource of this.ssdxConfig.resources) {
       await this.runResource(resource);
     }
   }
 
-  private errorSpinner(errorMsg: string): void {
-    if (!this.spinner.isSpinning) return;
-    this.spinner.suffixText = setColor(errorMsg, [print.Color.red]);
-    this.spinner.fail();
-    exit(1);
-  }
-
   private async runResource(resource: Resource): Promise<void> {
-    switch (resource.type) {
-      case ResourceType.APEX:
-        return await this.runApex(resource);
-      case ResourceType.JS:
-        return await this.runJs(resource);
-      case ResourceType.PERMISSION_SET:
-        return await this.assignPermissionSets(resource);
-      case ResourceType.LICENSE:
-        return await this.assignPermissionSetLicenses(resource);
-      case ResourceType.METADATA:
-        return await this.deployMetadata(resource);
-      default:
-        return this.errorSpinner(
-          `ERROR: Unsupported resource type: ${resource.type as string}`
-        );
-    }
-  }
+    if (resource.skip) return this.skipResource(resource);
 
-  // TODO: return value (including error)
-  public async runApex(resource: Resource): Promise<void> {
     await run({
-      cmd: 'npx sf apex:run',
-      args: ['--file', resource.value, '--target-org', this.targetOrg],
+      cmd: resource.cmd,
+      args: resource.args,
       outputType: OutputType.Spinner,
       spinnerText: this.getSpinnerText(resource),
+      exitOnError: !resource.continue_on_error,
     });
   }
 
-  public async runJs(resource: Resource): Promise<void> {
-    await run({
-      cmd: 'node',
-      args: [resource.value, this.targetOrg],
-      outputType: OutputType.Spinner,
-      spinnerText: this.getSpinnerText(resource),
-    });
+  private skipResource(resource: Resource) {
+    const spinnerText =
+      this.getSpinnerText(resource) +
+      '...  SKIPPING due to invalid configuration type';
+    ora(spinnerText).warn();
+    return;
   }
 
-  public async assignPermissionSets(resource: Resource): Promise<void> {
-    await run({
-      cmd: 'npx sf org:assign:permset',
-      args: ['--name', resource.value, '--target-org', this.targetOrg],
-      outputType: OutputType.Spinner,
-      spinnerText: this.getSpinnerText(resource),
-    });
-  }
-
-  public async assignPermissionSetLicenses(resource: Resource): Promise<void> {
-    await run({
-      cmd: 'npx sf org:assign:permsetlicense',
-      args: ['--name', resource.value, '--target-org', this.targetOrg],
-      outputType: OutputType.Spinner,
-      spinnerText: this.getSpinnerText(resource),
-    });
-  }
-
-  public async deployMetadata(resource: Resource): Promise<void> {
-    await run({
-      cmd: 'npx sf project:deploy:start',
-      args: [
-        '--source-dir',
-        resource.value,
-        '--ignore-conflicts',
-        '--concise',
-        '--target-org',
-        this.targetOrg,
-      ],
-      outputType: OutputType.Spinner,
-      spinnerText: this.getSpinnerText(resource),
-    });
-  }
   private getSpinnerText(resource: Resource): string | undefined {
     const type = this.getType(resource);
     const file = this.getFileName(resource);
@@ -152,15 +73,15 @@ export class ResourceAssignmentManager {
     }
     type = pad(type + ':', 16, ' ');
     type = type.toUpperCase();
-    return setColor(type, [print.Color.bold]);
+    return setColor(type, Color.bold);
   }
   private getFileName(resource: Resource) {
     const file = resource.value.split('/').pop() ?? '';
-    return setColor(file, [print.Color.green]);
+    return setColor(file, Color.green);
   }
   private getPath(resource: Resource): string {
     let path = resource.value.split('/').slice(0, -1).join('/');
-    path = setColor(path, [print.Color.blue]);
+    path = setColor(path, Color.blue);
     return path ? ` (from ${path})` : '';
   }
 }

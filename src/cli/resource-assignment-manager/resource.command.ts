@@ -2,17 +2,20 @@ import { Command } from 'commander';
 import { SlotOption } from './dto/resource-config.dto.js';
 import { getDefaultOrg } from 'cli/create/steps/devhub.js';
 import { ResourceAssignmentManager } from './resource-assignment-manager.js';
-import { setColor } from 'lib/print-helper/print-helper-formatter.js';
-import { Color } from 'lib/print-helper.js';
+import {
+  Color,
+  setColor,
+  setColors,
+} from 'lib/print-helper/print-helper-formatter.js';
 
-const DESCRIPTION = `${setColor('Configurable resource assignment to orgs. This option allows:', [Color.yellow, Color.bold])}
+const DESCRIPTION = `${setColors('Configurable resource assignment to orgs. This option allows:', [Color.yellow, Color.bold])}
   - Running Apex
   - Running JS
   - Assigning Permission Sets
   - Assigning Permission Set Licenses
   - Deploying source- or non-source tracked metadata
 
-All configurations are defined in ${setColor('ssdx-config.json', [Color.yellow])}.`;
+All configurations are defined in ${setColor('ssdx-config.json', Color.yellow)}.`;
 
 export class ResourceCommand {
   program: Command;
