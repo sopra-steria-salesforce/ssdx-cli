@@ -2,9 +2,8 @@ import { Command } from 'commander';
 import CreateCommand from './create/create.command.js';
 import AuthCommand from './auth/auth.command.js';
 import { ResourceCommand } from './resource-assignment-manager/resource.command.js';
-import { makeDirectory } from 'make-dir';
 
-class cli {
+export default class cli {
   protected static program = new Command();
 
   constructor() {
@@ -13,18 +12,12 @@ class cli {
     new ResourceCommand(cli.program);
   }
 
-  public async init(): Promise<void> {
-    await makeDirectory('.ssdx');
-    await makeDirectory('.ssdx/logs');
-
+  public run(): void {
     cli.program
       .name('ssdx-cli')
       .description('Salesforce DX cli helper tool')
       .version(process.env.npm_package_version as string);
-  }
-  public run(): void {
+
     cli.program.parse();
   }
 }
-
-export default cli;

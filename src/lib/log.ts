@@ -15,7 +15,10 @@ export const logger = pino(
     },
     timestamp: pino.stdTimeFunctions.isoTime,
   },
-  pino.destination(`${cwd}/.ssdx/logs/${currentDate}.log`)
+  pino.destination({
+    dest: `${cwd}/.ssdx/logs/${currentDate}.log`,
+    mkdir: true,
+  })
 );
 
 export const loggerInfo = logger.info.bind(logger);
