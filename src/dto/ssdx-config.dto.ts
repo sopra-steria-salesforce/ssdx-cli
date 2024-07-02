@@ -1,10 +1,15 @@
 export interface ssdxConfig {
   default_config: string;
-  pre_dependencies: Resource[];
-  pre_deploy: Resource[];
-  post_deploy: Resource[];
-  post_install: Resource[];
+  pre_dependencies: PreDependency[];
+  pre_deploy: PreDeploy[];
+  post_deploy: PoststDeploy[];
+  post_install: PostInstall[];
 }
+
+export interface PreDependency extends Resource {}
+export interface PreDeploy extends Resource {}
+export interface PoststDeploy extends Resource {}
+export interface PostInstall extends Resource {}
 
 export interface Resource {
   type: ResourceType;

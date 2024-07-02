@@ -2,21 +2,32 @@ import { SlotOption } from 'cli/resource-assignment-manager/dto/resource-config.
 import { Resource, ResourceType, ssdxConfig } from 'dto/ssdx-config.dto.js';
 import fs from 'fs';
 import { logger } from 'lib/log.js';
+import * as print from 'lib/print-helper.js';
+import { exit } from 'process';
 
 export function fetchConfig(): SSDX {
+  let config;
   try {
-    const config = JSON.parse(
+    config = JSON.parse(
       fs.readFileSync('ssdx-config.json', 'utf8')
     ) as ssdxConfig;
+  } catch (error) {
+    print.error(
+      'Failed to parse ssdx-config.json. Make sure it is a valid JSON file with correct structure (see documentation). View logs for details (./.ssdx/logs/)'
+    );
+    logger.error(error);
+    exit(1);
+  }
+  try {
     return new SSDX(config);
   } catch (error) {
-    throw new Error(
-      'Failed to parse ssdx-config.json, make sure it is a valid JSON file with correct structure. See documentation.'
+    print.error(
+      'Failed to process ssdx-config.json. See documentation on correct usage. View logs for details (./.ssdx/logs/)'
     );
+    logger.error(error);
+    exit(1);
   }
 }
-
-// export { Resource, ResourceType };
 
 export class SSDX {
   config: ssdxConfig;
@@ -30,10 +41,10 @@ export class SSDX {
   // gets all resouces if no slot is added, or one (or more) if slots are added
   public get resources(): Resource[] {
     return [
-      ...(this.isPreDependencies ? this.config.pre_dependencies : []),
-      ...(this.isPreDeploy ? this.config.pre_deploy : []),
-      ...(this.isPostDeploy ? this.config.post_deploy : []),
-      ...(this.isPostInstall ? this.config.post_install : []),
+      ...(this.isPreDependencies ? this.config.pre_dependencies ?? [] : []),
+      ...(this.isPreDeploy ? this.config.pre_deploy ?? [] : []),
+      ...(this.isPostDeploy ? this.config.post_deploy ?? [] : []),
+      ...(this.isPostInstall ? this.config.post_install ?? [] : []),
     ];
   }
 
