@@ -43,7 +43,7 @@ export class ResourceAssignmentManager {
 
     await run({
       cmd: resource.cmd,
-      args: resource.args,
+      args: [...resource.args, this.targetOrg],
       outputType: OutputType.Spinner,
       spinnerText: this.getSpinnerText(resource),
       exitOnError: !resource.continue_on_error,
