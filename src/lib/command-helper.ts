@@ -6,6 +6,7 @@ import { exit } from 'process';
 import { logger, loggerError, loggerInfo } from './log.js';
 import pino from 'pino';
 import { StdioOptions } from 'node:child_process';
+import pad from 'pad';
 
 // TODO: implement default spinner
 // TODO: implement retry on error
@@ -50,7 +51,10 @@ export class Command {
     return this.options.spinnerText ?? this.options.cmd;
   }
   get showSpinner(): boolean {
-    return this.typeIs(OutputType.Spinner);
+    return (
+      this.typeIs(OutputType.Spinner) ||
+      this.typeIs(OutputType.SpinnerAndOutput)
+    );
   }
   // TODO: implement
   private get retryOnFailure(): boolean {
@@ -73,7 +77,10 @@ export class Command {
     return this.typeIs(OutputType.Silent);
   }
   get endOutput(): boolean {
-    return this.typeIs(OutputType.OutputEnd);
+    return (
+      this.typeIs(OutputType.OutputEnd) ||
+      this.typeIs(OutputType.SpinnerAndOutput)
+    );
   }
   get liveOutput(): boolean {
     return this.typeIs(OutputType.OutputLive);
@@ -139,7 +146,12 @@ export class Command {
     if (!this.showSpinner) return;
 
     if (this.spinner?.isSpinning) {
-      this.spinner.suffixText = '\n' + setColor(this.output.stdout, Color.red);
+      this.spinner.suffixText =
+        '... ERROR! See message below:\n' +
+        pad('', process.stdout.columns, '-') +
+        '\n' +
+        setColor(this.output.stdout, Color.red) +
+        '\n\n';
       this.spinner.fail();
     }
 
@@ -147,11 +159,10 @@ export class Command {
   }
   private printError() {
     if (!this.outputError || this.showSpinner) return;
+    print.printSeparator();
+    print.error('\nERROR! See message below:\n');
+    print.error(this.output.stdout + '\n');
 
-    print.error('\n\nERROR RUNNING CODE:');
-    print.code(this.cmd + ' ' + this.args.join(' '));
-    print.error('\nERROR MESSAGE:');
-    print.error(this.output.stdout);
     if (this.exitOnError) exit(0);
   }
   private clearOutput() {
@@ -164,7 +175,10 @@ export class Command {
     if (this.spinner?.isSpinning) this.spinner.succeed();
   }
   private printOutput() {
-    if (this.endOutput) print.info(this.output.stdout);
+    if (this.endOutput && this.output.code === 0) {
+      print.printSeparator();
+      print.info(this.output.stdout + '\n');
+    }
   }
 }
 
@@ -184,6 +198,7 @@ export enum OutputType {
   OutputLive,
   OutputLiveAndClear,
   Spinner,
+  SpinnerAndOutput,
 }
 
 export interface CmdResult {

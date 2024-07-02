@@ -3,17 +3,10 @@ import ora from 'ora';
 import * as print from 'lib/print-helper.js';
 import { SlotOption } from './dto/resource-config.dto.js';
 import { SSDX, fetchConfig } from 'lib/config/ssdx-config.js';
-// import {
-//   SSDX,
-//   fetchConfig,
-//   Resource,
-//   ResourceType,
-// } from 'lib/config/ssdx-config.js';
 import { Color, setColor } from 'lib/print-helper/print-helper-formatter.js';
 import pad from 'pad';
 import { Resource, ResourceType } from 'dto/ssdx-config.dto.js';
 import { logger } from 'lib/log.js';
-// import { logger } from 'lib/log.js';
 
 export class ResourceAssignmentManager {
   options: SlotOption;
@@ -49,10 +42,17 @@ export class ResourceAssignmentManager {
     await run({
       cmd: resource.cmd,
       args: [...resource.args, this.targetOrg],
-      outputType: OutputType.Spinner,
+      outputType: this.getOutputType(),
       spinnerText: this.getSpinnerText(resource),
       exitOnError: !resource.continue_on_error,
     });
+  }
+
+  private getOutputType(): OutputType | undefined {
+    return (
+      (this.options.showOutput && OutputType.SpinnerAndOutput) ||
+      OutputType.Spinner
+    );
   }
 
   private skipResource(resource: Resource) {

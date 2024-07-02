@@ -6,6 +6,7 @@ import {
   setColors,
 } from './print-helper/print-helper-formatter.js';
 import { logger } from './log.js';
+import pad from 'pad';
 
 export function header(
   text: string,
@@ -60,4 +61,7 @@ export function error(text: string): void {
 export function code(text: string): void {
   logger.info(text);
   console.log(colors.bgGreen(colors.black(text)));
+}
+export function printSeparator(): void {
+  info(pad('', process.stdout.columns, '-'));
 }
