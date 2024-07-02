@@ -22,8 +22,6 @@ class create_org {
   public async createScratchOrg(): Promise<void> {
     print.subheader('Create Scratch Org');
 
-    this.spinner = ora('Creating Scratch Org').start();
-
     await run({
       cmd: 'npx sf org:create:scratch',
       args: [
@@ -38,7 +36,7 @@ class create_org {
         '45',
       ],
       outputType: OutputType.OutputLiveAndClear,
-    }); // TODO: add Output.LiveAndClear (bug, output wont appear)
+    });
 
     this.options.scratchOrgResult = {
       username: this.options.scratchOrgName,
@@ -62,15 +60,16 @@ class create_org {
   // }
 
   public async fetchUsername(): Promise<void> {
-    // console.log('');
+    this.spinner = ora('Fetching Username').start();
 
     const { stdout } = await run({
       cmd: 'npx sf org:display',
       args: ['--target-org', this.options.scratchOrgName, '--json'],
+      outputType: OutputType.Silent,
     });
 
     const org: Org = stdout && JSON.parse(stdout);
-    this.spinner.suffixText = `(username: ${org.result.username})`;
+    this.spinner.text = `Creating Scratch Org (username: ${org.result.username})`;
     this.spinner.succeed();
   }
 }

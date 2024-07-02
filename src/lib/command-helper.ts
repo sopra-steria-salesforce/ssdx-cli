@@ -5,6 +5,7 @@ import { Color, setColor } from './print-helper/print-helper-formatter.js';
 import { exit } from 'process';
 import { logger, loggerError, loggerInfo } from './log.js';
 import pino from 'pino';
+import { StdioOptions } from 'node:child_process';
 
 // TODO: implement default spinner
 // TODO: implement retry on error
@@ -22,9 +23,9 @@ export class Command {
   options: CmdOption;
 
   constructor(options: CmdOption) {
-    logger.info('Creating new command instance');
     this.options = options;
     this.child = spawn(this.cmd, this.args, {
+      stdio: this.stdio,
       shell: true,
       encoding: 'utf8',
     });
@@ -32,22 +33,34 @@ export class Command {
     if (this.showSpinner) this.spinner = ora(this.spinnerText).start();
   }
 
+  /* -------------------------------------------------------------------------- */
+  /*                                   getters                                  */
+  /* -------------------------------------------------------------------------- */
+
   private get cmd(): string {
     return this.options.cmd;
   }
   private get args(): string[] {
     return this.options.args ?? [];
   }
+  get stdio(): StdioOptions {
+    return this.liveOutput ? 'inherit' : 'pipe'; // liveOutput = true means inheritting the showing the output natively, else use custom piping
+  }
   private get spinnerText() {
     return this.options.spinnerText ?? this.options.cmd;
   }
-
-  private get outputType(): OutputType {
-    return this.options.outputType ?? OutputType.Silent;
+  get showSpinner(): boolean {
+    return this.typeIs(OutputType.Spinner);
   }
   // TODO: implement
   private get retryOnFailure(): boolean {
     return this.options.retryOnFailure ?? false;
+  }
+  private get outputType(): OutputType {
+    return this.options.outputType ?? OutputType.Silent;
+  }
+  private typeIs(type: OutputType): boolean {
+    return this.outputType == type;
   }
   private get outputError(): boolean {
     if (this.outputType === OutputType.Silent) return false;
@@ -55,6 +68,30 @@ export class Command {
   }
   private get exitOnError(): boolean {
     return this.options.exitOnError ?? true;
+  }
+  get isSilent(): boolean {
+    return this.typeIs(OutputType.Silent);
+  }
+  get endOutput(): boolean {
+    return this.typeIs(OutputType.OutputEnd);
+  }
+  get liveOutput(): boolean {
+    return (
+      this.typeIs(OutputType.OutputLive) ||
+      this.typeIs(OutputType.OutputLiveAndClear)
+    );
+  }
+  get customPipeOutput(): boolean {
+    return (
+      this.typeIs(OutputType.OutputLivePipe) ||
+      this.typeIs(OutputType.OutputLiveAndClearPipe)
+    );
+  }
+  get shouldClearOutput(): boolean {
+    return (
+      this.typeIs(OutputType.OutputLiveAndClear) ||
+      this.typeIs(OutputType.OutputLiveAndClearPipe)
+    );
   }
 
   /* -------------------------------------------------------------------------- */
@@ -71,7 +108,7 @@ export class Command {
     this.printOutput();
   }
   private pipeStdout() {
-    if (this.liveOutput) this.child.stdout?.pipe(process.stdout);
+    if (this.customPipeOutput) this.child.stdout?.pipe(process.stdout);
   }
   private storeStdout() {
     const fn = loggerInfo;
@@ -138,37 +175,6 @@ export class Command {
   private printOutput() {
     if (this.endOutput) print.info(this.output.stdout);
   }
-
-  /* -------------------------------------------------------------------------- */
-  /*                                   getters                                  */
-  /* -------------------------------------------------------------------------- */
-
-  get isSilent(): boolean {
-    return this.typeIs(OutputType.Silent);
-  }
-
-  get endOutput(): boolean {
-    return this.typeIs(OutputType.OutputEnd);
-  }
-
-  get liveOutput(): boolean {
-    return (
-      this.typeIs(OutputType.OutputLive) ||
-      this.typeIs(OutputType.OutputLiveAndClear)
-    );
-  }
-
-  get shouldClearOutput(): boolean {
-    return this.typeIs(OutputType.OutputLiveAndClear);
-  }
-
-  get showSpinner(): boolean {
-    return this.typeIs(OutputType.Spinner);
-  }
-
-  private typeIs(type: OutputType): boolean {
-    return this.outputType == type;
-  }
 }
 
 export interface CmdOption {
@@ -186,6 +192,8 @@ export enum OutputType {
   OutputEnd,
   OutputLive,
   OutputLiveAndClear,
+  OutputLivePipe,
+  OutputLiveAndClearPipe,
   Spinner,
 }
 

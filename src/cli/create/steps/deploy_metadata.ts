@@ -38,7 +38,7 @@ class Metadata {
         '--ignore-conflicts',
         '--concise',
       ],
-      outputType: OutputType.OutputLiveAndClear,
+      outputType: OutputType.OutputLiveAndClearPipe,
     });
 
     console.log('');
