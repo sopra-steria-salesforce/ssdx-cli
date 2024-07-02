@@ -6,10 +6,6 @@ import { exit } from 'process';
 import { logger, loggerError, loggerInfo } from './log.js';
 import pino from 'pino';
 import { StdioOptions } from 'node:child_process';
-import pad from 'pad';
-
-// TODO: implement default spinner
-// TODO: implement retry on error
 
 export async function run(options: CmdOption): Promise<CmdResult> {
   const cmd = new Command(options);
@@ -31,18 +27,9 @@ export class Command {
       encoding: 'utf8',
     });
 
-    if (this.showSpinner) this.startSpinner();
-    if (this.showHeader) this.printHeader();
-  }
-
-  private startSpinner() {
-    this.spinner = ora(this.spinnerText).start();
-  }
-
-  private printHeader() {
-    print.info(this.spinnerText, false);
-    print.printSeparator();
-    print;
+    this.startSpinner();
+    this.printHeader();
+    this.printSeparator();
   }
 
   /* -------------------------------------------------------------------------- */
@@ -70,7 +57,16 @@ export class Command {
       this.typeIs(OutputType.SpinnerAndOutput)
     );
   }
-  // TODO: implement
+  get showInitialSeparator(): boolean {
+    return this.typeIs(OutputType.OutputLiveWithHeader);
+  }
+  get showEndSeparator(): boolean {
+    return (
+      this.typeIs(OutputType.OutputEnd) ||
+      this.typeIs(OutputType.SpinnerAndOutput)
+    );
+  }
+  // TODO: implement retry
   private get retryOnFailure(): boolean {
     return this.options.retryOnFailure ?? false;
   }
@@ -93,7 +89,8 @@ export class Command {
   get endOutput(): boolean {
     return (
       this.typeIs(OutputType.OutputEnd) ||
-      this.typeIs(OutputType.SpinnerAndOutput)
+      this.typeIs(OutputType.OutputLiveWithHeader) ||
+      this.typeIs(OutputType.SpinnerAndOutput) // TODO missing separator
     );
   }
   get liveOutput(): boolean {
@@ -112,6 +109,21 @@ export class Command {
   /* -------------------------------------------------------------------------- */
   /*                                 run command                                */
   /* -------------------------------------------------------------------------- */
+  private startSpinner() {
+    if (this.showSpinner) {
+      this.spinner = ora(this.spinnerText).start();
+    }
+  }
+  private printHeader() {
+    if (this.showHeader) {
+      print.info(this.spinnerText, false);
+    }
+  }
+  private printSeparator() {
+    if (this.showInitialSeparator) {
+      print.printSeparator();
+    }
+  }
 
   public async run(): Promise<void> {
     this.pipeStdout();
@@ -165,7 +177,7 @@ export class Command {
     if (this.spinner?.isSpinning) {
       this.spinner.suffixText =
         '... ERROR! See message below:\n' +
-        pad('', process.stdout.columns, '-') +
+        print.getSeparator() +
         '\n' +
         setColor(this.output.stdout, Color.red) +
         '\n\n';
@@ -176,7 +188,6 @@ export class Command {
   }
   private printError() {
     if (!this.outputError || this.showSpinner) return;
-    print.printSeparator();
     print.error('\nERROR! See message below:\n', false);
     print.error(this.output.stdout + '\n', false);
 
@@ -194,8 +205,8 @@ export class Command {
     if (this.spinner?.isSpinning) this.spinner.succeed();
   }
   private printOutput() {
+    if (this.showEndSeparator) print.printSeparator();
     if (this.endOutput && this.output.code === 0) {
-      print.printSeparator();
       print.info(this.output.stdout + '\n', false);
     }
   }

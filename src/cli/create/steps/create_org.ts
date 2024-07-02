@@ -60,6 +60,8 @@ class create_org {
   // }
 
   public async fetchUsername(): Promise<void> {
+    print.info('', false);
+
     this.spinner = ora('Fetching Username').start();
 
     const { stdout } = await run({

@@ -63,5 +63,8 @@ export function code(text: string, log: boolean = true): void {
   console.log(colors.bgGreen(colors.black(text)));
 }
 export function printSeparator(): void {
-  info(pad('', process.stdout.columns, '-'), false);
+  info(getSeparator(), false);
+}
+export function getSeparator(): string {
+  return pad('', process.stdout.columns, '-');
 }

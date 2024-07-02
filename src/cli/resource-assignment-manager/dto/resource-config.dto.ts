@@ -11,6 +11,7 @@ export interface SlotOption {
   postDeploy: boolean;
   postInstall: boolean;
   showOutput: boolean;
+  ci: boolean;
 }
 
 export function getSlotOptions(targetOrg: string): SlotOptions {
@@ -32,4 +33,5 @@ export const emptySlotOption: SlotOption = {
   postDeploy: false,
   postInstall: false,
   showOutput: false,
+  ci: false,
 };
