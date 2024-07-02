@@ -35,7 +35,7 @@ class create_org {
         '--wait',
         '45',
       ],
-      outputType: OutputType.OutputLiveAndClear,
+      outputType: OutputType.OutputLive,
     });
 
     this.options.scratchOrgResult = {

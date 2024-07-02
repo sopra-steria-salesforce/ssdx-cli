@@ -76,22 +76,13 @@ export class Command {
     return this.typeIs(OutputType.OutputEnd);
   }
   get liveOutput(): boolean {
-    return (
-      this.typeIs(OutputType.OutputLive) ||
-      this.typeIs(OutputType.OutputLiveAndClear)
-    );
+    return this.typeIs(OutputType.OutputLive);
   }
   get customPipeOutput(): boolean {
-    return (
-      this.typeIs(OutputType.OutputLivePipe) ||
-      this.typeIs(OutputType.OutputLiveAndClearPipe)
-    );
+    return this.typeIs(OutputType.OutputLiveAndClear);
   }
   get shouldClearOutput(): boolean {
-    return (
-      this.typeIs(OutputType.OutputLiveAndClear) ||
-      this.typeIs(OutputType.OutputLiveAndClearPipe)
-    );
+    return this.typeIs(OutputType.OutputLiveAndClear);
   }
 
   /* -------------------------------------------------------------------------- */
@@ -192,8 +183,6 @@ export enum OutputType {
   OutputEnd,
   OutputLive,
   OutputLiveAndClear,
-  OutputLivePipe,
-  OutputLiveAndClearPipe,
   Spinner,
 }
 

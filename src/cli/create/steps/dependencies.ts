@@ -56,7 +56,7 @@ class Dependencies {
         '--targetdevhubusername',
         this.devhub,
       ],
-      outputType: OutputType.OutputLiveAndClearPipe,
+      outputType: OutputType.OutputLiveAndClear,
     });
 
     console.log('');
