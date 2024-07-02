@@ -16,33 +16,45 @@ export async function run(options: CmdOption): Promise<CmdResult> {
 }
 
 export class Command {
-  cmd: string;
-  args: string[];
   child;
   output: CmdResult = { stdout: '', stderr: '', code: 0 };
-  outputType: OutputType;
   spinner?: Ora;
-  spinnerText: string;
-  retryOnFailure?: boolean;
-  outputError: boolean;
-  exitOnError: boolean;
+  options: CmdOption;
 
   constructor(options: CmdOption) {
     logger.info('Creating new command instance');
-    this.cmd = options.cmd;
-    this.args = options.args ?? [];
+    this.options = options;
     this.child = spawn(this.cmd, this.args, {
       shell: true,
       encoding: 'utf8',
     });
-    this.outputType = options.outputType ?? OutputType.Silent;
-    this.retryOnFailure = options.retryOnFailure;
-    this.outputError = options.outputError ?? true;
-    this.exitOnError = options.exitOnError ?? true;
 
-    // spinner
-    this.spinnerText = options.spinnerText ?? this.cmd;
     if (this.showSpinner) this.spinner = ora(this.spinnerText).start();
+  }
+
+  private get cmd(): string {
+    return this.options.cmd;
+  }
+  private get args(): string[] {
+    return this.options.args ?? [];
+  }
+  private get spinnerText() {
+    return this.options.spinnerText ?? this.options.cmd;
+  }
+
+  private get outputType(): OutputType {
+    return this.options.outputType ?? OutputType.Silent;
+  }
+  // TODO: implement
+  private get retryOnFailure(): boolean {
+    return this.options.retryOnFailure ?? false;
+  }
+  private get outputError(): boolean {
+    if (this.outputType === OutputType.Silent) return false;
+    return this.options.outputError ?? true; // if outputError is undefined, default to true. If false, returns false.
+  }
+  private get exitOnError(): boolean {
+    return this.options.exitOnError ?? true;
   }
 
   /* -------------------------------------------------------------------------- */
@@ -56,6 +68,7 @@ export class Command {
     await this.runCmd();
     this.clearOutput();
     this.clearSpinner();
+    this.printOutput();
   }
   private pipeStdout() {
     if (this.liveOutput) this.child.stdout?.pipe(process.stdout);
@@ -70,7 +83,6 @@ export class Command {
     const out = this.output;
     this.child.stderr?.on('data', data => (out.stderr += this.store(data, fn)));
   }
-
   private store(data: any, loggerMethod: pino.LogFn): string {
     const dataBuf: Buffer = data;
     const dataStr = dataBuf.toString();
@@ -123,28 +135,39 @@ export class Command {
   private clearSpinner() {
     if (this.spinner?.isSpinning) this.spinner.succeed();
   }
+  private printOutput() {
+    if (this.endOutput) print.info(this.output.stdout);
+  }
 
   /* -------------------------------------------------------------------------- */
   /*                                   getters                                  */
   /* -------------------------------------------------------------------------- */
 
   get isSilent(): boolean {
-    return this.outputType == OutputType.Silent;
+    return this.typeIs(OutputType.Silent);
   }
+
   get endOutput(): boolean {
-    return this.outputType == OutputType.OutputEnd;
+    return this.typeIs(OutputType.OutputEnd);
   }
+
   get liveOutput(): boolean {
     return (
-      this.outputType === OutputType.OutputLive ||
-      this.outputType === OutputType.OutputLiveAndClear
+      this.typeIs(OutputType.OutputLive) ||
+      this.typeIs(OutputType.OutputLiveAndClear)
     );
   }
+
   get shouldClearOutput(): boolean {
-    return this.outputType == OutputType.OutputLiveAndClear;
+    return this.typeIs(OutputType.OutputLiveAndClear);
   }
+
   get showSpinner(): boolean {
-    return this.outputType == OutputType.Spinner;
+    return this.typeIs(OutputType.Spinner);
+  }
+
+  private typeIs(type: OutputType): boolean {
+    return this.outputType == type;
   }
 }
 
