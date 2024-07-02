@@ -15,7 +15,7 @@ export async function run(options: CmdOption): Promise<CmdResult> {
 
 export class Command {
   child;
-  output: CmdResult = { stdout: '', stderr: '', code: 0 };
+  output: CmdResult = { stdout: [], stderr: [], code: 0 };
   spinner?: Ora;
   options: CmdOption;
 
@@ -139,19 +139,19 @@ export class Command {
   }
   private storeStdout() {
     const fn = loggerInfo;
-    const out = this.output;
-    this.child.stdout?.on('data', data => (out.stdout += this.store(data, fn)));
+    this.child.stdout?.on('data', data => this.store(data, fn));
   }
   private handleStderr() {
     const fn = loggerError;
-    const out = this.output;
-    this.child.stderr?.on('data', data => (out.stderr += this.store(data, fn)));
+    this.child.stderr?.on('data', data => this.store(data, fn));
   }
-  private store(data: any, loggerMethod: pino.LogFn): string {
+  private store(data: any, loggerMethod: pino.LogFn) {
     const dataBuf: Buffer = data;
-    const dataStr = dataBuf.toString();
-    loggerMethod(dataStr);
-    return dataStr;
+    const dataStr = dataBuf.toString().trimEnd() + '\n';
+    if (dataStr !== '\n') {
+      loggerMethod(dataStr);
+      this.output.stdout.push(dataStr);
+    }
   }
 
   private async runCmd() {
@@ -165,9 +165,6 @@ export class Command {
         }
       })
       .catch(error => {
-        logger.error(
-          'Caught Spawn Error, continuing if not specified exitOnError. See error:'
-        );
         logger.error(error);
       });
   }
@@ -179,7 +176,7 @@ export class Command {
         '... ERROR! See message below:\n' +
         print.getSeparator() +
         '\n' +
-        setColor(this.output.stdout, Color.red) +
+        setColor(this.output.stdout.join('\n'), Color.red) +
         '\n\n';
       this.spinner.fail();
     }
@@ -189,15 +186,14 @@ export class Command {
   private printError() {
     if (!this.outputError || this.showSpinner) return;
     print.error('\nERROR! See message below:\n', false);
-    print.error(this.output.stdout + '\n', false);
-
+    print.error(this.output.stdout.join('\n') + '\n', false);
     if (this.exitOnError) exit(0);
   }
   // TODO: calculate the real amount when process.stdout.col is less then a strings width
   // TODO: get output from native pipe to clear
   private clearOutput() {
     if (this.shouldClearOutput) {
-      const lines = this.output.stdout.split(/\r\n|\r|\n/).length;
+      const lines = this.output.stdout.length;
       clearNLines(lines);
     }
   }
@@ -207,7 +203,7 @@ export class Command {
   private printOutput() {
     if (this.showEndSeparator) print.printSeparator();
     if (this.endOutput && this.output.code === 0) {
-      print.info(this.output.stdout + '\n', false);
+      print.info(this.output.stdout.join('\n') + '\n', false);
     }
   }
 }
@@ -233,8 +229,8 @@ export enum OutputType {
 }
 
 export interface CmdResult {
-  stdout: string;
-  stderr: string;
+  stdout: string[];
+  stderr: string[];
   code: number;
 }
 

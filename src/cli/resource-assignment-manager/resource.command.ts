@@ -42,8 +42,6 @@ export class ResourceCommand {
 
 export async function resourceAssignmentManager(options: SlotOption) {
   const targetOrg = options.targetOrg ?? (await getDefaultOrg());
-  console.log(targetOrg);
-
   const resource = new ResourceAssignmentManager(options, targetOrg);
   await resource.run();
 }
