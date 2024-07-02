@@ -47,7 +47,6 @@ export default class CreateCommand {
     await createScratchOrg(this.options);
 
     // assigner slots
-    // TODO: change slot options to default options
     const { preDependencies, preDeploy, postDeploy } = getSlotOptions(
       this.options.scratchOrgName
     );

@@ -1,3 +1,4 @@
+import { SlotOption } from 'cli/resource-assignment-manager/dto/resource-config.dto.js';
 import { Resource, ResourceType, ssdxConfig } from 'dto/ssdx-config.dto.js';
 import fs from 'fs';
 import { logger } from 'lib/log.js';
@@ -19,32 +20,48 @@ export function fetchConfig(): SSDX {
 
 export class SSDX {
   config: ssdxConfig;
+  slotOption?: SlotOption;
 
   constructor(config: ssdxConfig) {
     this.config = config;
     this.setParameters();
   }
 
+  // gets all resouces if no slot is added, or one (or more) if slots are added
   public get resources(): Resource[] {
     return [
-      ...this.config.pre_dependencies,
-      ...this.config.pre_deploy,
-      ...this.config.post_deploy,
-      ...this.config.post_install,
+      ...(this.isPreDependencies ? this.config.pre_dependencies : []),
+      ...(this.isPreDeploy ? this.config.pre_deploy : []),
+      ...(this.isPostDeploy ? this.config.post_deploy : []),
+      ...(this.isPostInstall ? this.config.post_install : []),
     ];
+  }
+
+  // gets all resouce types if no slot is added, or one (or more) if slots are added
+  public get resourceTypes(): string[] {
+    return [
+      ...(this.isPreDependencies ? ['Pre-dependencies'] : []),
+      ...(this.isPreDeploy ? ['Pre-deploy'] : []),
+      ...(this.isPostDeploy ? ['Post-deploy'] : []),
+      ...(this.isPostInstall ? ['Post-package install'] : []),
+    ];
+  }
+
+  public get isPreDependencies(): boolean {
+    return !this.slotOption || this.slotOption.preDependencies;
+  }
+  public get isPreDeploy(): boolean {
+    return !this.slotOption || this.slotOption.preDeploy;
+  }
+  public get isPostDeploy(): boolean {
+    return !this.slotOption || this.slotOption.postDeploy;
+  }
+  public get isPostInstall(): boolean {
+    return !this.slotOption || this.slotOption.postInstall;
   }
 
   public hasResources(): boolean {
     return this.resources.length > 0;
-  }
-
-  public get resourceTypes(): string[] {
-    return [
-      'Pre-dependencies',
-      'Pre-deploy',
-      'Post-deploy',
-      'Post-package install',
-    ];
   }
 
   private setParameters() {

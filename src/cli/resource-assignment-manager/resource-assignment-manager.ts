@@ -12,6 +12,7 @@ import { SSDX, fetchConfig } from 'lib/config/ssdx-config.js';
 import { Color, setColor } from 'lib/print-helper/print-helper-formatter.js';
 import pad from 'pad';
 import { Resource, ResourceType } from 'dto/ssdx-config.dto.js';
+import { logger } from 'lib/log.js';
 // import { logger } from 'lib/log.js';
 
 export class ResourceAssignmentManager {
@@ -20,6 +21,9 @@ export class ResourceAssignmentManager {
   ssdxConfig: SSDX = fetchConfig();
 
   constructor(options: SlotOption, targetOrg: string) {
+    logger.info('Running ResourceAssignmentManager');
+    logger.info(options);
+    this.ssdxConfig.slotOption = options;
     this.options = options;
     this.targetOrg = targetOrg;
   }
@@ -40,7 +44,8 @@ export class ResourceAssignmentManager {
 
   private async runResource(resource: Resource): Promise<void> {
     if (resource.skip) return this.skipResource(resource);
-
+    logger.info('Running resource:');
+    logger.info(resource);
     await run({
       cmd: resource.cmd,
       args: [...resource.args, this.targetOrg],

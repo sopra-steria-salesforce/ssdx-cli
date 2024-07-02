@@ -3,7 +3,8 @@ import * as print from './print-helper.js';
 import ora, { Ora } from 'ora';
 import { Color, setColor } from './print-helper/print-helper-formatter.js';
 import { exit } from 'process';
-import { logger } from './log.js';
+import { logger, loggerError, loggerInfo } from './log.js';
+import pino from 'pino';
 
 // TODO: implement default spinner
 // TODO: implement retry on error
@@ -49,37 +50,50 @@ export class Command {
   /* -------------------------------------------------------------------------- */
 
   public async run(): Promise<void> {
-    this.handleStdout();
+    this.pipeStdout();
+    this.storeStdout();
     this.handleStderr();
     await this.runCmd();
     this.clearOutput();
     this.clearSpinner();
   }
-  private handleStdout() {
-    if (this.liveOutput) {
-      this.child.stdout?.pipe(process.stdout);
-    }
-    this.child.stdout?.on('data', data => {
-      const dataStr: Buffer = data;
-      this.output.stdout += dataStr.toString();
-      logger.info(dataStr.toString());
-    });
+  private pipeStdout() {
+    if (this.liveOutput) this.child.stdout?.pipe(process.stdout);
   }
-  private async runCmd() {
-    logger.info(`Running command: ${this.cmd} ${this.args.join(' ')}`);
-    await this.child.on('exit', code => {
-      if ((code as number) !== 0) {
-        this.spinnerError();
-        this.printError();
-      }
-    });
+  private storeStdout() {
+    const fn = loggerInfo;
+    const out = this.output;
+    this.child.stdout?.on('data', data => (out.stdout += this.store(data, fn)));
   }
   private handleStderr() {
-    this.child.stderr?.on('data', data => {
-      const dataStr: Buffer = data;
-      logger.error(dataStr.toString());
-      this.output.stderr += dataStr.toString();
-    });
+    const fn = loggerError;
+    const out = this.output;
+    this.child.stderr?.on('data', data => (out.stderr += this.store(data, fn)));
+  }
+
+  private store(data: any, loggerMethod: pino.LogFn): string {
+    const dataBuf: Buffer = data;
+    const dataStr = dataBuf.toString();
+    loggerMethod(dataStr);
+    return dataStr;
+  }
+
+  private async runCmd() {
+    logger.info(`Running command: ${this.cmd} ${this.args.join(' ')}`);
+    await this.child
+      .on('exit', code => {
+        this.output.code = code as number;
+        if (this.output.code !== 0) {
+          this.spinnerError();
+          this.printError();
+        }
+      })
+      .catch(error => {
+        logger.error(
+          'Caught Spawn Error, continuing if not specified exitOnError. See error:'
+        );
+        logger.error(error);
+      });
   }
   private spinnerError() {
     if (!this.showSpinner) return;
@@ -94,7 +108,6 @@ export class Command {
   private printError() {
     if (!this.outputError || this.showSpinner) return;
 
-    console.log('ERROR RUNNING CODE:');
     print.error('\n\nERROR RUNNING CODE:');
     print.code(this.cmd + ' ' + this.args.join(' '));
     print.error('\nERROR MESSAGE:');
@@ -103,13 +116,11 @@ export class Command {
   }
   private clearOutput() {
     if (this.shouldClearOutput) {
-      logger.info('Clearing output');
       const lines = this.output.stdout.split(/\r\n|\r|\n/).length;
       clearNLines(lines);
     }
   }
   private clearSpinner() {
-    logger.info('Clearing spinner');
     if (this.spinner?.isSpinning) this.spinner.succeed();
   }
 

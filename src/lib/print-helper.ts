@@ -5,6 +5,7 @@ import {
   getFrameOptions,
   setColors,
 } from './print-helper/print-helper-formatter.js';
+import { logger } from './log.js';
 
 export function header(
   text: string,
@@ -45,15 +46,18 @@ export function subheader(
 }
 
 export function info(text: string): void {
-  // TODO: add logging
+  logger.info(text);
   console.log(text);
 }
 export function warning(text: string): void {
+  logger.warn(text);
   console.log(colors.yellow(text));
 }
 export function error(text: string): void {
+  logger.error(text);
   console.log(colors.bold(colors.red(text)));
 }
 export function code(text: string): void {
-  console.log(colors.bgRed(colors.black(text)));
+  logger.info(text);
+  console.log(colors.bgGreen(colors.black(text)));
 }

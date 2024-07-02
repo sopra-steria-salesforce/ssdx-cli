@@ -17,3 +17,6 @@ export const logger = pino(
   },
   pino.destination(`${cwd}/.ssdx/logs/${currentDate}.log`)
 );
+
+export const loggerInfo = logger.info.bind(logger);
+export const loggerError = logger.error.bind(logger);
