@@ -1,6 +1,6 @@
 {
   "name": "ssdx-cli",
-  "version": "0.9.3",
+  "version": "0.9.4",
   "description": "A template for creating npm packages using TypeScript and VSCode",
   "exports": "./build/index.js",
   "typings": "./build/index.d.ts",
@@ -22,6 +22,7 @@
     "test:watch": "jest --watch",
     "test": "jest --coverage",
     "typecheck": "tsc --noEmit",
+    "postinstall": "npx sf config:set org-capitalize-record-types=true",
     "dependencies:update": "ncu -u"
   },
   "repository": {
