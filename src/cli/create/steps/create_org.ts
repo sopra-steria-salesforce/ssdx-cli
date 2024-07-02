@@ -70,7 +70,7 @@ class create_org {
       outputType: OutputType.Silent,
     });
 
-    const org: Org = stdout && JSON.parse(stdout);
+    const org: Org = stdout && JSON.parse(stdout[0]);
     this.spinner.text = `Creating Scratch Org (username: ${org.result.username})`;
     this.spinner.succeed();
   }
