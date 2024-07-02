@@ -27,7 +27,7 @@ export class ResourceCommand {
     this.program
       .command('resource')
       .description(DESCRIPTION)
-      .option('--target-org', 'The org to run the scripts on')
+      .option('-o --target-org <string>', 'The org to run the scripts on')
       .option('--pre-dependencies', 'Runs "pre_dependencies" resources', false)
       .option('--pre-deploy', 'Runs "pre_deploy" resources', false)
       .option('--post-deploy', 'Runs "post_deploy" resources', false)
@@ -42,6 +42,8 @@ export class ResourceCommand {
 
 export async function resourceAssignmentManager(options: SlotOption) {
   const targetOrg = options.targetOrg ?? (await getDefaultOrg());
+  console.log(targetOrg);
+
   const resource = new ResourceAssignmentManager(options, targetOrg);
   await resource.run();
 }
