@@ -26,7 +26,7 @@
     },
     {
       "type": "metadata",
-      "value": "bin"
+      "value": "bin/metadata"
     }
   ],
   "post_deploy": [
@@ -44,12 +44,21 @@
     },
     {
       "type": "metadata",
-      "value": "bin/metadata/permissionsets/"
+      "value": "force-app/main/default/labels"
+    },
+    {
+      "type": "js",
+      "value": "bin/js/updatePermsetWithProdValues.cjs"
     },
     {
       "type": "metadata",
-      "value": "force-app/main/default/labels"
+      "value": "bin/metadata/permissionsets/post_deploy.permissionset-meta.xml"
     }
   ],
-  "post_install": []
+  "post_install": [
+    {
+      "type": "js",
+      "value": "bin/js/updatePermsetWithProdValues.cjs"
+    }
+  ]
 }
