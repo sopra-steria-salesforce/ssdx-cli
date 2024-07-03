@@ -181,13 +181,14 @@ export class Command {
       this.spinner.fail();
     }
 
-    if (this.exitOnError) exit(0);
+    if (this.exitOnError) exit(1);
   }
   private printError() {
     if (!this.outputError || this.showSpinner) return;
     print.error('\nERROR! See message below:\n', false);
     print.error(this.output.stdout.join('\n') + '\n', false);
-    if (this.exitOnError) exit(0);
+
+    if (this.exitOnError) exit(1);
   }
   // TODO: calculate the real amount when process.stdout.col is less then a strings width
   // TODO: get output from native pipe to clear
