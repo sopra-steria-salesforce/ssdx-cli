@@ -11,6 +11,7 @@ export interface SlotOption {
   postDeploy: boolean;
   postInstall: boolean;
   showOutput: boolean;
+  testLevel: TestLevel;
   ci: boolean;
 }
 
@@ -27,11 +28,18 @@ export function getSlotOptions(targetOrg: string): SlotOptions {
   return options;
 }
 
+export enum TestLevel {
+  NoTestRun = 'NoTestRun',
+  RunLocalTests = 'RunLocalTests',
+  RunAllTestsInOrg = 'RunAllTestsInOrg',
+}
+
 export const emptySlotOption: SlotOption = {
   preDependencies: false,
   preDeploy: false,
   postDeploy: false,
   postInstall: false,
   showOutput: false,
+  testLevel: TestLevel.NoTestRun,
   ci: false,
 };

@@ -1,4 +1,7 @@
-import { SlotOption } from 'cli/resource-assignment-manager/dto/resource-config.dto.js';
+import {
+  SlotOption,
+  TestLevel,
+} from 'cli/resource-assignment-manager/dto/resource-config.dto.js';
 import { Resource, ResourceType, ssdxConfig } from 'dto/ssdx-config.dto.js';
 import fs from 'fs';
 import { logger } from 'lib/log.js';
@@ -38,6 +41,11 @@ export class SSDX {
     this.setParameters();
   }
 
+  public setSlotOption(slotOption: SlotOption) {
+    this.slotOption = slotOption;
+    this.setParameters();
+  }
+
   // gets all resouces if no slot is added, or one (or more) if slots are added
   public get resources(): Resource[] {
     return [
@@ -69,6 +77,9 @@ export class SSDX {
   }
   public get isPostInstall(): boolean {
     return !this.slotOption || this.slotOption.postInstall;
+  }
+  private get testLevel(): string {
+    return this.slotOption?.testLevel ?? TestLevel.NoTestRun.toString();
   }
 
   public hasResources(): boolean {
@@ -102,6 +113,8 @@ export class SSDX {
             resource.value,
             '--ignore-conflicts',
             '--concise',
+            '--test-level',
+            this.testLevel,
             '--target-org',
           ];
           break;

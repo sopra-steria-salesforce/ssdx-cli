@@ -15,7 +15,7 @@ export class ResourceAssignmentManager {
 
   constructor(options: SlotOption, targetOrg: string) {
     logger.info(options, 'Running ResourceAssignmentManager');
-    this.ssdxConfig.slotOption = options;
+    this.ssdxConfig.setSlotOption(options);
     this.options = options;
     this.targetOrg = targetOrg;
   }
