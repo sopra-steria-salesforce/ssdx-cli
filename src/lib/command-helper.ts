@@ -25,6 +25,12 @@ export class Command {
       stdio: this.stdio,
       shell: true,
       encoding: 'utf8',
+      env: {
+        ...process.env,
+        SF_CAPITALIZE_RECORD_TYPES: 'true',
+        FORCE_SHOW_SPINNER: 'true',
+        SF_SKIP_NEW_VERSION_CHECK: 'true',
+      },
     });
 
     this.startSpinner();
