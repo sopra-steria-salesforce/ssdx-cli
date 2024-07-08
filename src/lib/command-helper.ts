@@ -145,18 +145,20 @@ export class Command {
   }
   private storeStdout() {
     const fn = loggerInfo;
-    this.child.stdout?.on('data', data => this.store(data, fn));
+    const o = this.output;
+    this.child.stdout?.on('data', data => this.store(data, o.stdout, fn));
   }
   private handleStderr() {
     const fn = loggerError;
-    this.child.stderr?.on('data', data => this.store(data, fn));
+    const o = this.output;
+    this.child.stderr?.on('data', data => this.store(data, o.stderr, fn));
   }
-  private store(data: any, loggerMethod: pino.LogFn) {
+  private store(data: any, output: string[], loggerMethod: pino.LogFn) {
     const dataBuf: Buffer = data;
     const dataStr = dataBuf.toString().trimEnd() + '\n';
     if (dataStr !== '\n') {
       loggerMethod(dataStr);
-      this.output.stdout.push(dataStr);
+      output.push(dataStr);
     }
   }
 
