@@ -1,12 +1,7 @@
 const { exec } = require('child_process');
 
 // Define the commands
-const commands = [
-  'echo hei',
-  'echo på deg',
-  'echo igjen',
-  'echo hei på deg igjen',
-];
+const commands = ['echo hello', 'echo again'];
 
 // Function to execute the commands
 function runCommands(commands) {
