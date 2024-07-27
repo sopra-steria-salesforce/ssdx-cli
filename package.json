@@ -1,6 +1,6 @@
 {
   "name": "ssdx-cli",
-  "version": "0.9.11",
+  "version": "0.9.12",
   "description": "A template for creating npm packages using TypeScript and VSCode",
   "exports": "./build/index.js",
   "typings": "./build/index.d.ts",
@@ -17,7 +17,7 @@
     "clean": "rm -rf ./lib/",
     "cm": "cz",
     "lint": "eslint ./src/ --fix",
-    "prepare": "husky install",
+    "prepare": "husky",
     "semantic-release": "semantic-release",
     "test:watch": "jest --watch",
     "test": "jest --coverage",
