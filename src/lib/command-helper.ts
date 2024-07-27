@@ -202,10 +202,27 @@ export class Command {
   // TODO: get output from native pipe to clear
   private clearOutput() {
     if (this.shouldClearOutput) {
-      const lines = this.output.stdout.length;
-      clearNLines(lines);
+      const lines = this.getLinesOfOutput();
+      this.clearNLines(lines);
     }
   }
+  private getLinesOfOutput() {
+    let lines = 0;
+    // iterate all output and errors
+    for (const line of [...this.output.stdout, ...this.output.stderr]) {
+      // split on newline
+      for (const split of line.split('\n')) {
+        // if split is empty, add 1 line due empty newline
+        lines += Math.ceil(split.length / process.stdout.columns) || 1;
+      }
+    }
+    return lines;
+  }
+  private clearNLines(N: number): void {
+    process.stdout.moveCursor(0, -N);
+    process.stdout.clearScreenDown();
+  }
+
   private clearSpinner() {
     if (this.spinner?.isSpinning) this.spinner.succeed();
   }
@@ -241,11 +258,6 @@ export interface CmdResult {
   stdout: string[];
   stderr: string[];
   code: number;
-}
-
-function clearNLines(N: number): void {
-  process.stdout.moveCursor(0, -N);
-  process.stdout.clearScreenDown();
 }
 
 // TODO: move to new method
