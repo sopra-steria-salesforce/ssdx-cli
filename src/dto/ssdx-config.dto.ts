@@ -6,10 +6,10 @@ export interface ssdxConfig {
   post_install: PostInstall[];
 }
 
-export interface PreDependency extends Resource {}
-export interface PreDeploy extends Resource {}
-export interface PoststDeploy extends Resource {}
-export interface PostInstall extends Resource {}
+export type PreDependency = Resource;
+export type PreDeploy = Resource;
+export type PoststDeploy = Resource;
+export type PostInstall = Resource;
 
 export interface Resource {
   type: ResourceType;
@@ -23,6 +23,7 @@ export interface Resource {
 export enum ResourceType {
   APEX = 'apex',
   JS = 'js',
+  CMD = 'cmd',
   PERMISSION_SET = 'permissionSet',
   LICENSE = 'permissionSetLicense',
   METADATA = 'metadata',
