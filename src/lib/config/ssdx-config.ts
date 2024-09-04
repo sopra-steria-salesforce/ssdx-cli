@@ -9,35 +9,15 @@ import * as print from 'lib/print-helper.js';
 import { exit } from 'process';
 
 export function fetchConfig(): SSDX {
-  let config;
-  try {
-    config = JSON.parse(
-      fs.readFileSync('ssdx-config.json', 'utf8')
-    ) as ssdxConfig;
-  } catch (error) {
-    print.error(
-      'Failed to parse ssdx-config.json. Make sure it is a valid JSON file with correct structure (see documentation). View logs for details (./.ssdx/logs/)'
-    );
-    logger.error(error);
-    exit(1);
-  }
-  try {
-    return new SSDX(config);
-  } catch (error) {
-    print.error(
-      'Failed to process ssdx-config.json. See documentation on correct usage. View logs for details (./.ssdx/logs/)'
-    );
-    logger.error(error);
-    exit(1);
-  }
+  return new SSDX();
 }
 
 export class SSDX {
-  config: ssdxConfig;
+  config: ssdxConfig = {} as ssdxConfig;
   slotOption?: SlotOption;
 
-  constructor(config: ssdxConfig) {
-    this.config = config;
+  constructor() {
+    this.setConfig();
     this.setParameters();
   }
 
@@ -46,13 +26,31 @@ export class SSDX {
     this.setParameters();
   }
 
+  private getFile(): string {
+    return fs.existsSync('ssdx-config.json')
+      ? fs.readFileSync('ssdx-config.json', 'utf8')
+      : '{}';
+  }
+
+  private setConfig() {
+    try {
+      this.config = JSON.parse(this.getFile()) as ssdxConfig;
+    } catch (error) {
+      print.error(
+        'Failed to parse ssdx-config.json. Make sure it is a valid JSON file with correct structure (see documentation). View logs for details (./.ssdx/logs/)'
+      );
+      logger.error(error);
+      exit(1);
+    }
+  }
+
   // gets all resouces if no slot is added, or one (or more) if slots are added
   public get resources(): Resource[] {
     return [
-      ...(this.isPreDependencies ? this.config.pre_dependencies ?? [] : []),
-      ...(this.isPreDeploy ? this.config.pre_deploy ?? [] : []),
-      ...(this.isPostDeploy ? this.config.post_deploy ?? [] : []),
-      ...(this.isPostInstall ? this.config.post_install ?? [] : []),
+      ...(this.isPreDependencies ? (this.config.pre_dependencies ?? []) : []),
+      ...(this.isPreDeploy ? (this.config.pre_deploy ?? []) : []),
+      ...(this.isPostDeploy ? (this.config.post_deploy ?? []) : []),
+      ...(this.isPostInstall ? (this.config.post_install ?? []) : []),
     ];
   }
 
