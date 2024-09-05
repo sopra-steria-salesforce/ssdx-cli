@@ -41,7 +41,7 @@ export class ResourceAssignmentManager {
     if (resource.type !== ResourceType.PERMISSION_SET_GROUP) return;
 
     const spinnerText =
-      pad(this.getType(resource) + ':', 16, ' ') +
+      this.getType(resource) +
       `Waiting for permission set group '${setColor(resource.value, Color.green)}' to be updated`;
     const spinner = ora(spinnerText).start();
 
