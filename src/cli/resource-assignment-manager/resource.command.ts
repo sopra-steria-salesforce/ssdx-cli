@@ -2,11 +2,13 @@ import { Command } from 'commander';
 import { SlotOption } from './dto/resource-config.dto.js';
 import { getDefaultOrg } from 'cli/create/steps/devhub.js';
 import { ResourceAssignmentManager } from './resource-assignment-manager.js';
+import { OutputType, run } from 'lib/command-helper.js';
 import {
   Color,
   setColor,
   setColors,
 } from 'lib/print-helper/print-helper-formatter.js';
+import { Org } from 'cli/create/dto/org.dto.js';
 
 const DESCRIPTION = `${setColors('Configurable resource assignment to orgs. This option allows:', [Color.yellow, Color.bold])}
   - Running Apex
@@ -46,7 +48,17 @@ export class ResourceCommand {
 }
 
 export async function resourceAssignmentManager(options: SlotOption) {
-  const targetOrg = options.targetOrg ?? (await getDefaultOrg());
+  const targetOrgAlias = options.targetOrg ?? (await getDefaultOrg());
+
+  const { stdout } = await run({
+    cmd: 'npx sf org:display',
+    args: ['--target-org', targetOrgAlias, '--json'],
+    outputType: OutputType.Silent,
+  });
+  const org: Org = stdout && JSON.parse(stdout[0]);
+
+  const targetOrg = org.result.username;
+
   const resource = new ResourceAssignmentManager(options, targetOrg);
   await resource.run();
 }
