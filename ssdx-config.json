@@ -44,15 +44,11 @@
     {
       "type": "metadata",
       "value": "bin/metadata/labels/pre_deploy.labels-meta.xml"
-    },
-    {
-      "type": "metadata",
-      "value": "bin/metadata"
     }
   ],
   "post_deploy": [
     {
-      "type": "permissionSet",
+      "type": "permissionSetGroup",
       "value": "TestGroup"
     },
     {
