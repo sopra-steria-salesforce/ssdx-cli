@@ -49,7 +49,7 @@ export class ResourceAssignmentManager {
     let count = 0;
 
     while (output.totalSize === 0 && count < this.max) {
-      spinner.text = `${spinnerText}...  ${count++}/${this.max}`;
+      spinner.text = `${spinnerText}...  (${count++}/${this.max})`;
       await new Promise(resolve => setTimeout(resolve, 1000 * count));
       output = await this.checkPermsetStatus(resource);
     }
