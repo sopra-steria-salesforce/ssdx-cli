@@ -8,6 +8,12 @@
     },
     {
       "type": "sf",
+      "value": "sf org generate password",
+      "print_output": true,
+      "_description": "Set a password to the Scratch Org user. Can optionally set always_print_output to view the password, but errors are always outputted."
+    },
+    {
+      "type": "sf",
       "value": "sf org:list",
       "skip_target_org": true,
       "_description": "Lists all the Scratch Orgs in the Dev Hub. skip_target_org is set to true, so the command is not run in the Scratch Org."

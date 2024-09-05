@@ -18,6 +18,7 @@ export interface Resource {
   value: string;
   skip_target_org: boolean;
   continue_on_error: boolean;
+  print_output: boolean;
   skip: boolean;
 }
 

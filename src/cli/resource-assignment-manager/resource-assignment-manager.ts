@@ -46,7 +46,7 @@ export class ResourceAssignmentManager {
     await run({
       cmd: resource.cmd,
       args: resource.args,
-      outputType: this.getOutputType(),
+      outputType: this.getOutputType(resource),
       spinnerText: this.getSpinnerText(resource),
       exitOnError: !resource.continue_on_error,
     });
@@ -66,9 +66,10 @@ export class ResourceAssignmentManager {
     resource.args.push(this.targetOrg);
   }
 
-  private getOutputType(): OutputType | undefined {
+  private getOutputType(resource: Resource): OutputType {
     if (this.options.ci) return OutputType.OutputLiveWithHeader;
-    if (this.options.showOutput) return OutputType.SpinnerAndOutput;
+    if (this.options.showOutput || resource.print_output)
+      return OutputType.SpinnerAndOutput;
     return OutputType.Spinner;
   }
 
