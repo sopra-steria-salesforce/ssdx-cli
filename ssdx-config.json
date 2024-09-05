@@ -16,6 +16,7 @@
       "type": "sf",
       "value": "sf org:list",
       "skip_target_org": true,
+      "print_output": true,
       "_description": "Lists all the Scratch Orgs in the Dev Hub. skip_target_org is set to true, so the command is not run in the Scratch Org."
     },
     {
