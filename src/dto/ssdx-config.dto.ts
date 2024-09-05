@@ -2,13 +2,13 @@ export interface ssdxConfig {
   default_config: string;
   pre_dependencies: PreDependency[];
   pre_deploy: PreDeploy[];
-  post_deploy: PoststDeploy[];
+  post_deploy: PostDeploy[];
   post_install: PostInstall[];
 }
 
 export type PreDependency = Resource;
 export type PreDeploy = Resource;
-export type PoststDeploy = Resource;
+export type PostDeploy = Resource;
 export type PostInstall = Resource;
 
 export interface Resource {
@@ -16,6 +16,7 @@ export interface Resource {
   cmd: string;
   args: string[];
   value: string;
+  skip_target_org: boolean;
   continue_on_error: boolean;
   skip: boolean;
 }
@@ -23,7 +24,7 @@ export interface Resource {
 export enum ResourceType {
   APEX = 'apex',
   JS = 'js',
-  CMD = 'cmd',
+  SF = 'sf',
   PERMISSION_SET = 'permissionSet',
   LICENSE = 'permissionSetLicense',
   METADATA = 'metadata',

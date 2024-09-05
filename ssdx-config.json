@@ -2,6 +2,17 @@
   "default_config": "config/project-scratch-def.json",
   "pre_dependencies": [
     {
+      "type": "sf",
+      "value": "sf org display user",
+      "_description": "Allows you to run any sf command. In this case, the user details for the Scratch Org is outputted."
+    },
+    {
+      "type": "sf",
+      "value": "sf org:list",
+      "skip_target_org": true,
+      "_description": "Lists all the Scratch Orgs in the Dev Hub. skip_target_org is set to true, so the command is not run in the Scratch Org."
+    },
+    {
       "type": "permissionSetLicense",
       "value": "ServiceUserPsl",
       "continue_on_error": true
@@ -18,7 +29,10 @@
   "pre_deploy": [
     {
       "type": "js",
-      "value": "bin/js/test.cjs"
+      "value": "bin/js/test.cjs",
+      "skip_target_org": true,
+      "continue_on_error": true,
+      "_description": "Run a custom cjs/js script. Will not supply the target org to the script."
     },
     {
       "type": "metadata",

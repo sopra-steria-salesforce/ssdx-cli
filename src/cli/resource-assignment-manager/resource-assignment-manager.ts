@@ -40,13 +40,30 @@ export class ResourceAssignmentManager {
       resource,
       'Running resource from resource-assignment-manager.ts'
     );
+
+    this.addTargetOrg(resource);
+
     await run({
       cmd: resource.cmd,
-      args: [...resource.args, this.targetOrg],
+      args: resource.args,
       outputType: this.getOutputType(),
       spinnerText: this.getSpinnerText(resource),
       exitOnError: !resource.continue_on_error,
     });
+  }
+
+  private addTargetOrg(resource: Resource) {
+    if (resource.skip_target_org) {
+      return;
+    }
+
+    // resource type JS does not need arg --target-org, only SF commands need it
+    if (resource.type !== ResourceType.JS) {
+      resource.args.push('--target-org');
+    }
+
+    // always add the target-org value to the args (if not skipping). JS scripts will be added without name, and SF commands will have the value with --target-org before
+    resource.args.push(this.targetOrg);
   }
 
   private getOutputType(): OutputType | undefined {
