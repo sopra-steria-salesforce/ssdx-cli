@@ -53,7 +53,7 @@
   "post_deploy": [
     {
       "type": "permissionSet",
-      "value": "test"
+      "value": "TestGroup"
     },
     {
       "type": "permissionSetLicense",
@@ -66,6 +66,10 @@
     {
       "type": "metadata",
       "value": "force-app/main/default/labels"
+    },
+    {
+      "type": "permissionSet",
+      "value": "test"
     },
     {
       "type": "js",

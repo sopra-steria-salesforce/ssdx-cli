@@ -7,6 +7,7 @@ import { Color, setColor } from 'lib/print-helper/print-helper-formatter.js';
 import pad from 'pad';
 import { Resource, ResourceType } from 'dto/ssdx-config.dto.js';
 import { logger } from 'lib/log.js';
+import { queryRecord } from 'lib/sf-helper.js';
 
 export class ResourceAssignmentManager {
   options: SlotOption;
@@ -30,8 +31,44 @@ export class ResourceAssignmentManager {
     );
 
     for (const resource of this.ssdxConfig.resources) {
+      await this.waitForPermsetGroup(resource);
       await this.runResource(resource);
     }
+  }
+
+  max = 8;
+  private async waitForPermsetGroup(resource: Resource): Promise<void> {
+    if (resource.type !== ResourceType.PERMISSION_SET_GROUP) return;
+
+    const spinnerText =
+      pad('JS:', 16, ' ') +
+      `Waiting for permission set group '${resource.value}' to be updated`;
+    const spinner = ora(spinnerText).start();
+
+    let output = await this.checkPermsetStatus(resource);
+    let count = 0;
+
+    while (output.totalSize === 0 && count < this.max) {
+      spinner.text = `${spinnerText}...  ${count++}/${this.max}`;
+      await new Promise(resolve => setTimeout(resolve, 1000 * count));
+      output = await this.checkPermsetStatus(resource);
+    }
+
+    if (output.totalSize === 0) {
+      logger.error(
+        `Permission set group '${resource.value}' did not update after ${this.max} attempts`
+      );
+      spinner.fail();
+    } else {
+      spinner.succeed();
+    }
+  }
+
+  private async checkPermsetStatus(resource: Resource) {
+    return await queryRecord(
+      `SELECT Count() FROM PermissionSetGroup WHERE DeveloperName = '${resource.value}' AND Status = 'Updated'`,
+      this.targetOrg
+    );
   }
 
   private async runResource(resource: Resource): Promise<void> {
@@ -91,6 +128,8 @@ export class ResourceAssignmentManager {
     let type = resource.type as string;
     if (resource.type === ResourceType.PERMISSION_SET) {
       type = 'PERMISSION SET';
+    } else if (resource.type === ResourceType.PERMISSION_SET_GROUP) {
+      type = 'PERMSET GROUP';
     } else if (resource.type === ResourceType.LICENSE) {
       type = 'LICENSE';
     }

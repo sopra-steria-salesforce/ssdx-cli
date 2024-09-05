@@ -27,6 +27,7 @@ export enum ResourceType {
   JS = 'js',
   SF = 'sf',
   PERMISSION_SET = 'permissionSet',
+  PERMISSION_SET_GROUP = 'permissionSetGroup',
   LICENSE = 'permissionSetLicense',
   METADATA = 'metadata',
 }

@@ -91,7 +91,6 @@ export class SSDX {
         case ResourceType.APEX:
           resource.cmd = 'npx sf apex:run';
           resource.args = ['--file', resource.value];
-
           break;
         case ResourceType.JS:
           resource.cmd = 'node';
@@ -100,17 +99,15 @@ export class SSDX {
         case ResourceType.SF:
           resource.cmd = 'npx ' + resource.value;
           resource.args = [];
-
           break;
         case ResourceType.PERMISSION_SET:
+        case ResourceType.PERMISSION_SET_GROUP:
           resource.cmd = 'npx sf org:assign:permset';
           resource.args = ['--name', resource.value];
-
           break;
         case ResourceType.LICENSE:
           resource.cmd = 'npx sf org:assign:permsetlicense';
           resource.args = ['--name', resource.value];
-
           break;
         case ResourceType.METADATA:
           resource.cmd = 'npx sf project:deploy:start';
@@ -122,7 +119,6 @@ export class SSDX {
             '--test-level',
             this.testLevel,
           ];
-
           break;
         default:
           logger.error(
