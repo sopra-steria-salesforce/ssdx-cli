@@ -50,6 +50,8 @@ export class ResourceCommand {
 export async function resourceAssignmentManager(options: SlotOption) {
   const targetOrgAlias = options.targetOrg ?? (await getDefaultOrg());
 
+  // TODO: check if targetOrgAlias is a valid org alias before continuing
+
   const { stdout } = await run({
     cmd: 'npx sf org:display',
     args: ['--target-org', targetOrgAlias, '--json'],
