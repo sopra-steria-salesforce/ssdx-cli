@@ -86,7 +86,9 @@ class Dependencies {
     ) {
       for (const dependency of this.sfdxProject.packageDirectories[0]
         .dependencies) {
-        dependencies.push(`${dependency.package}:${this.packageKey}`);
+        if (dependency.versionNumber) {
+          dependencies.push(`${dependency.package}:${this.packageKey}`);
+        }
       }
     }
     return `"${dependencies.join(' ')}"`;
