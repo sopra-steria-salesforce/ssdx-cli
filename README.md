@@ -52,6 +52,8 @@ ssdx create -n my_feature
 - `-v, --target-dev-hub <string>:` The alias or username of the dev hub org.
 - `--skip-dependencies:` Skip dependency installation.
 - `--skip-deployment:` Skip the deployment step.
+- `--ci:` Disable fancy output for CI environments.
+- `--disable-notifications:` Disable OS notifications (useful for CI environments)
 
 ## resource
 
@@ -71,6 +73,7 @@ ssdx resource [options]
 - `--show-output:` Show output of resource assignments.
 - `-l, --test-level <string>:` Specify the test level for metadata operations (default: NoTestRun).
 - `--ci:` Disable fancy output for CI environments.
+- `--disable-notifications:` Disable OS notifications (useful for CI environments)
 
 # Configuration
 

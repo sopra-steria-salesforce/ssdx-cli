@@ -7,7 +7,7 @@ import { logger, loggerError, loggerInfo } from './log.js';
 import pino from 'pino';
 import { StdioOptions } from 'node:child_process';
 import { handleProcessSignals } from './process.js';
-
+import BaseOptions from 'dto/base.dto.js';
 export async function run(options: CmdOption): Promise<CmdResult> {
   const cmd = new Command(options);
   await cmd.run();
@@ -72,7 +72,7 @@ export class Command {
     return this.options.retryOnFailure ?? false;
   }
   private get outputType(): OutputType {
-    return this.options.outputType ?? OutputType.Silent;
+    return BaseOptions.ci ? OutputType.OutputLiveWithHeader : (this.options.outputType ?? OutputType.Silent);
   }
   private typeIs(type: OutputType): boolean {
     return this.outputType == type;
