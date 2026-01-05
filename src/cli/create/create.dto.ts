@@ -29,7 +29,7 @@ export default class CreateOptions extends BaseOptions {
 
     CreateOptions.configFile = options.configFile;
     CreateOptions.durationDays = options.durationDays;
-    CreateOptions.scratchOrgName = options.scratchOrgName;
+    CreateOptions.scratchOrgName = options.scratchOrgName; // TODO: give error if adding spaces or invalid signs
     CreateOptions.packageKey = options.packageKey;
 
     CreateOptions.deleteCurrentOrg = options.deleteCurrentOrg;

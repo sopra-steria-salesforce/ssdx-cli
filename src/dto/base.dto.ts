@@ -21,7 +21,7 @@ export default class BaseOptions {
   public static debug: boolean = false;
 
   public static setFields(options: typeof BaseOptions): void {
-    BaseOptions.targetOrg = options.targetOrg;
+    BaseOptions.targetOrg = options.targetOrg; // TODO: give error if using spaces
     BaseOptions.targetDevHub = options.targetDevHub;
 
     BaseOptions.disableNotifications = options.disableNotifications;
