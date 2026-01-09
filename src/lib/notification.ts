@@ -14,14 +14,25 @@ export interface NotificationOptions {
 
 export class Notification {
   public static disableNotifications: boolean = false;
-
+  private static notifySendAvailable: boolean = false;
   private static getIcon(): string {
     return join(__dirname, 'assets', 'salesforce.png');
   }
 
+  private static checkModuleAvailable(): void {
+    if (this.disableNotifications || this.notifySendAvailable) return;
+    try {
+      require.resolve('notify-send');
+      this.notifySendAvailable = true;
+    } catch {
+      this.notifySendAvailable = false;
+    }
+  }
+
   static async show(options: NotificationOptions): Promise<void> {
     // Check if notifications are disabled
-    if (this.disableNotifications) {
+    this.checkModuleAvailable();
+    if (this.disableNotifications || !this.notifySendAvailable) {
       return Promise.resolve();
     }
 
