@@ -15,6 +15,51 @@ export async function run(options: CmdOption): Promise<CmdResult> {
   return cmd.output;
 }
 
+export interface CmdOption {
+  cmd: string;
+  args?: string[];
+  outputType?: OutputType;
+  spinnerText?: string;
+  retryOnFailure?: boolean;
+  exitOnError?: boolean;
+  outputError?: boolean;
+}
+
+export enum OutputType {
+  Silent,
+  OutputEnd,
+  OutputLive,
+  OutputLiveWithHeader,
+  OutputLiveAndClear,
+  Spinner,
+  SpinnerAndOutput,
+}
+
+export interface CmdResult {
+  stdout: string[];
+  stderr: string[];
+  code: number;
+}
+
+// TODO: move to new method
+
+export async function runCmd(cmd: string, args: string[] = []): Promise<string> {
+  const output = await spawn(cmd, args, {
+    shell: true,
+    encoding: 'utf8',
+  }).catch(error => {
+    print.error('Error running command:');
+    print.code(`${cmd} ${args.join(' ')}`);
+    throw error;
+  });
+
+  return output.stdout as string;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                  Cmd Class                                 */
+/* -------------------------------------------------------------------------- */
+
 export class Command {
   child;
   output: CmdResult = { stdout: [], stderr: [], code: 0 };
@@ -123,8 +168,9 @@ export class Command {
   }
 
   /* -------------------------------------------------------------------------- */
-  /*                                 run command                                */
+  /*                                   spinner                                  */
   /* -------------------------------------------------------------------------- */
+
   private startSpinner() {
     if (this.showSpinner) {
       this.spinner = ora(this.spinnerText).start();
@@ -143,6 +189,10 @@ export class Command {
       print.printSeparator();
     }
   }
+
+  /* -------------------------------------------------------------------------- */
+  /*                                 run command                                */
+  /* -------------------------------------------------------------------------- */
 
   public async run(): Promise<void> {
     this.pipeStdout();
@@ -223,7 +273,7 @@ export class Command {
   private clearOutput() {
     if (this.shouldClearOutput) {
       const lines = this.output.stdout.length;
-      clearNLines(lines);
+      this.clearNLines(lines);
     }
   }
 
@@ -237,50 +287,9 @@ export class Command {
       print.output(this.output.stdout.join('\n') + '\n');
     }
   }
-}
 
-export interface CmdOption {
-  cmd: string;
-  args?: string[];
-  outputType?: OutputType;
-  spinnerText?: string;
-  retryOnFailure?: boolean;
-  exitOnError?: boolean;
-  outputError?: boolean;
-}
-
-export enum OutputType {
-  Silent,
-  OutputEnd,
-  OutputLive,
-  OutputLiveWithHeader,
-  OutputLiveAndClear,
-  Spinner,
-  SpinnerAndOutput,
-}
-
-export interface CmdResult {
-  stdout: string[];
-  stderr: string[];
-  code: number;
-}
-
-function clearNLines(N: number): void {
-  process.stdout.moveCursor(0, -N);
-  process.stdout.clearScreenDown();
-}
-
-// TODO: move to new method
-
-export async function runCmd(cmd: string, args: string[] = []): Promise<string> {
-  const output = await spawn(cmd, args, {
-    shell: true,
-    encoding: 'utf8',
-  }).catch(error => {
-    print.error('Error running command:');
-    print.code(`${cmd} ${args.join(' ')}`);
-    throw error;
-  });
-
-  return output.stdout as string;
+  private clearNLines(N: number): void {
+    process.stdout.moveCursor(0, -N);
+    process.stdout.clearScreenDown();
+  }
 }
