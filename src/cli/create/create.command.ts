@@ -14,6 +14,7 @@ import {
   startResourcePreDeploy,
 } from 'cli/resource-assignment-manager/resource-assignment-manager.js';
 import { addBaseOptions } from 'dto/base.dto.js';
+import { fetchOrgFromPool } from './steps/fetch_org_from_pool.js';
 
 export default class CreateCommand {
   program: Command;
@@ -38,7 +39,8 @@ export default class CreateCommand {
       .option('--delete-current-org', 'Delete the current Scratch Org')
       .option('--skip-dependencies', 'Skip dependency installation')
       .option('--skip-deployment', 'Skip deployment step')
-      .option('--keep-existing-org', 'Keep the existing Scratch Org');
+      .option('--keep-existing-org', 'Keep the existing Scratch Org')
+      .option('--enable-pools', 'Enable sfp pools usage');
 
     // Apply base options to the create command, not the main program
     addBaseOptions(createCommand);
@@ -51,7 +53,8 @@ export default class CreateCommand {
 
   private async main() {
     await initialize();
-    await delete_question();
+    await delete_question(); // TODO: fix with pools
+    await fetchOrgFromPool();
     await createScratchOrg();
 
     // dependency install

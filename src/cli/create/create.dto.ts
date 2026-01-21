@@ -18,6 +18,7 @@ export default class CreateOptions extends BaseOptions {
   public static skipDependencies: string;
   public static skipDeployment: string;
   public static skipPermsetAssignment: string;
+  public static enablePools: string;
 
   // debug
   public static keepExistingOrg: string;
@@ -36,6 +37,7 @@ export default class CreateOptions extends BaseOptions {
     CreateOptions.skipDependencies = options.skipDependencies;
     CreateOptions.skipDeployment = options.skipDeployment;
     CreateOptions.skipPermsetAssignment = options.skipPermsetAssignment;
+    CreateOptions.enablePools = options.enablePools;
 
     CreateOptions.keepExistingOrg = options.keepExistingOrg;
     print.debug('Parsing create command parameters', options);

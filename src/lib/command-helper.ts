@@ -55,6 +55,19 @@ export class Command {
   private get spinnerText() {
     return this.options.spinnerText ?? this.options.cmd;
   }
+  private get defaultSpinnerErrorText() {
+    return (
+      'ERROR! See message below:\n' +
+      print.getSeparator() +
+      '\n' +
+      setColor(this.output.stdout.join('\n'), Color.red) +
+      '\n\n'
+    );
+  }
+  private get spinnerErrorText() {
+    return this.options.spinnerErrorText ?? this.defaultSpinnerErrorText;
+  }
+
   get showHeader(): boolean {
     return this.typeIs(OutputType.OutputLiveWithHeader);
   }
@@ -173,12 +186,7 @@ export class Command {
     if (!this.showSpinner) return;
 
     if (this.spinner?.isSpinning) {
-      this.spinner.suffixText =
-        '... ERROR! See message below:\n' +
-        print.getSeparator() +
-        '\n' +
-        setColor(this.output.stdout.join('\n'), Color.red) +
-        '\n\n';
+      this.spinner.suffixText = `... ${this.spinnerErrorText}`;
       this.spinner.fail();
     }
 
@@ -215,6 +223,7 @@ export interface CmdOption {
   args?: string[];
   outputType?: OutputType;
   spinnerText?: string;
+  spinnerErrorText?: string;
   retryOnFailure?: boolean;
   exitOnError?: boolean;
   outputError?: boolean;

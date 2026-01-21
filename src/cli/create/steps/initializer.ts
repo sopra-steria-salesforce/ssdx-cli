@@ -14,7 +14,7 @@ import { fetchConfig, SSDX } from 'lib/config/ssdx-config.js';
 const CONFIG_FOLDER_PATH = './config/';
 
 export async function initialize(): Promise<void> {
-  print.subheader('Create Scratch Org');
+  print.subheader('Scratch Org');
 
   const init = new initializer();
   init.setScratchOrgConfig();
