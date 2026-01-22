@@ -146,6 +146,38 @@ The CLI uses a configuration file named `ssdx-config.json` at root level, to def
 }
 ```
 
+# Local Development
+
+To develop and make changes to the CLI itself, do:
+
+1. Run `npm install`
+1. Run either `npm run bin` or `npm run bin:js`
+
+- The former runs the TypeScript code natively, the latter compiles it to JavaScript and runs it (slower, but more production like code)
+
+To run with commands, run `npm run bin create` or `npm run bin resource`. See documenation above for how to use the CLI when installed. Will be exactly the same, but `ssdx` is changed to `npm run bin` when running locally.
+
+To use parameters when running locally, run `npm run bin create -- -n MyName` or `npm run bin resource -- --pre-dependencies`
+
+## Deploying
+
+Make sure all changes are being made from a branch (with correct naming convention, see below) and pushed using a PR. Detailed instructions:
+
+1. Make a branch based on main
+1. Give it a name with a prefix, e.g. `feature/my-new-feature`. Allowed prefixes are:
+   - `breaking/..` → major version will be updated (1.x.x → 2.0.0)
+   - `feature/..` → minor version will be updated (x.1.x → x.2.0)
+   - `refactor/..` → patch version will be updated (x.x.1 → x.x.2)
+   - `fix/..` → patch
+   - `ci/..` → patch
+   - `test/..` → no new release
+   - `docs/..` → no new release
+1. Make a PR from branch to main
+1. Upon merging, the package is automatically deployed to NPM
+   - Should be available almost immediately, but you might need to specify version number to install due to caching being out-of-date
+
+See [branch.config.json](branch.config.json) for allowed prefixes and [release.config.mjs](release.config.mjs) for release management (major/minor/patch version numbers to incremented).
+
 # License
 
 This project is licensed under the MIT License.
