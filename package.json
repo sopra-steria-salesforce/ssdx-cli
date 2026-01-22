@@ -10,8 +10,9 @@
     "ssdx": "build/index.js"
   },
   "scripts": {
-    "build": "tsx scripts/set-version.ts && tsc --project tsconfig.build.json && tsc-alias -p tsconfig.build.json",
-    "build:publish": "npm run build && npm publish",
+    "build:set-version": "tsx scripts/set-version.ts",
+    "build": "tsc --project tsconfig.build.json && tsc-alias -p tsconfig.build.json",
+    "build:publish": "npm run build:set-version && npm run build && npm publish",
     "bin": "tsx ./src/index.ts",
     "bin:js": "npm run build && node ./build/index.js",
     "clean": "rm -rf ./lib/",
