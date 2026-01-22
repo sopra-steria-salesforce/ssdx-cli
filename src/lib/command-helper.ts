@@ -30,7 +30,6 @@ export enum OutputType {
   OutputEnd,
   OutputLive,
   OutputLiveWithHeader,
-  OutputLiveAndClear,
   Spinner,
   SpinnerAndOutput,
 }
@@ -144,14 +143,6 @@ export class Command {
     return this.typeIs(OutputType.OutputLive) || this.typeIs(OutputType.OutputLiveWithHeader);
   }
 
-  get customPipeOutput(): boolean {
-    return this.typeIs(OutputType.OutputLiveAndClear);
-  }
-
-  get shouldClearOutput(): boolean {
-    return this.typeIs(OutputType.OutputLiveAndClear);
-  }
-
   /* -------------------------------------------------------------------------- */
   /*                                   spinner                                  */
   /* -------------------------------------------------------------------------- */
@@ -180,31 +171,23 @@ export class Command {
   /* -------------------------------------------------------------------------- */
 
   public async run(): Promise<void> {
-    this.pipeStdout();
     this.storeStdout();
-    this.handleStderr();
+    this.storeStderr();
     await this.runCmd();
-    this.clearOutput();
+    this.handleError();
     this.clearSpinner();
     this.printOutput();
   }
 
-  private pipeStdout() {
-    if (this.customPipeOutput) this.child.stdout?.pipe(process.stdout);
-  }
-
   private storeStdout() {
-    const fn = loggerInfo;
-    const o = this.output;
-    this.child.stdout?.on('data', data => this.store(data, o.stdout, fn));
+    this.child.stdout?.on('data', data => this.store(data, this.output.stdout, loggerInfo));
   }
 
-  private handleStderr() {
-    const fn = loggerError;
-    const o = this.output;
-    this.child.stderr?.on('data', data => this.store(data, o.stderr, fn));
+  private storeStderr() {
+    this.child.stderr?.on('data', data => this.store(data, this.output.stderr, loggerError));
   }
 
+  // store stdout amd stderr, with correct newlines
   private store(data: any, output: string[], loggerMethod: pino.LogFn) {
     const dataBuf: Buffer = data;
     const dataStr = dataBuf.toString().trimEnd() + '\n';
@@ -216,18 +199,34 @@ export class Command {
 
   private async runCmd() {
     print.debug(`Running command: ${this.cmd} ${this.args.join(' ')}`);
+
+    // prettier-ignore
     await this.child
-      .on('exit', code => {
-        this.output.code = code as number;
-        if (this.output.code !== 0) {
-          this.spinnerError();
-          this.printError();
-        }
-      })
-      .catch(error => {
-        logger.error(error);
-      });
+      .on('exit', code => (this.output.code = code as number))
+      .catch(error => logger.error(error));
   }
+
+  private handleError() {
+    if (this.output.code !== 0) {
+      this.spinnerError();
+      this.printError();
+    }
+  }
+
+  private clearSpinner() {
+    if (this.spinner?.isSpinning) this.spinner.succeed();
+  }
+
+  private printOutput() {
+    if (this.showEndSeparator) print.printSeparator();
+    if (this.endOutput && this.output.code === 0) {
+      print.output(this.output.stdout.join('\n') + '\n');
+    }
+  }
+
+  /* -------------------------------------------------------------------------- */
+  /*                                Error Handler                               */
+  /* -------------------------------------------------------------------------- */
 
   private spinnerError() {
     if (!this.showSpinner) return;
@@ -251,30 +250,5 @@ export class Command {
     print.error(this.output.stdout.join('\n') + '\n');
 
     if (this.exitOnError) exit(1);
-  }
-
-  // TODO: calculate the real amount when process.stdout.col is less then a strings width
-  // TODO: get output from native pipe to clear
-  private clearOutput() {
-    if (this.shouldClearOutput) {
-      const lines = this.output.stdout.length;
-      this.clearNLines(lines);
-    }
-  }
-
-  private clearSpinner() {
-    if (this.spinner?.isSpinning) this.spinner.succeed();
-  }
-
-  private printOutput() {
-    if (this.showEndSeparator) print.printSeparator();
-    if (this.endOutput && this.output.code === 0) {
-      print.output(this.output.stdout.join('\n') + '\n');
-    }
-  }
-
-  private clearNLines(N: number): void {
-    process.stdout.moveCursor(0, -N);
-    process.stdout.clearScreenDown();
   }
 }
