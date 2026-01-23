@@ -2,7 +2,8 @@
 import { Ora } from 'ora';
 import CreateOptions from '../create.dto.js';
 import { handleProcessSignals } from 'lib/process.js';
-import { run, OutputType } from 'lib/command-helper.js';
+import { run, OutputType, CmdResult } from 'lib/command-helper.js';
+import * as print from 'lib/print-helper.js';
 
 export async function fetchOrgFromPool(): Promise<void> {
   const fetcher = new PoolFetcher();
@@ -33,8 +34,13 @@ class PoolFetcher {
 
     if (results.code == 0) {
       CreateOptions.keepExistingOrg = 'true';
+    } else {
+      this.formatError(results);
     }
-    // TODO: handle code 1 (output error), handle non-0 and non-1
+  }
+
+  private formatError(results: CmdResult) {
+    print.error(results.stderr.toString().split('Error: ')[1].split('\n')[0] + '\n');
   }
 
   public async runCommand() {
@@ -57,13 +63,5 @@ class PoolFetcher {
   }
   private getTag(): string {
     return CreateOptions.ci ? 'ci' : 'dev';
-  }
-
-  private get successText(): string {
-    return `Fetched Scratch Org from pool. Stored as '${CreateOptions.scratchOrgName || ''}' and set as default.`;
-  }
-
-  private get errorText(): string {
-    return 'error';
   }
 }
