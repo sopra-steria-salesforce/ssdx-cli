@@ -53,7 +53,7 @@ export default class CreateCommand {
 
   private async main() {
     await initialize();
-    await delete_question(); // TODO: fix with pools
+    await delete_question();
     await fetchOrgFromPool();
     await createScratchOrg();
 

@@ -4,7 +4,8 @@ import CreateOptions from '../create.dto.js';
 import { Org } from '@salesforce/core';
 import { confirm } from '@inquirer/prompts';
 import { getCurrentScratchOrg, getCurrentScratchOrgAlias } from 'lib/config/sf-config.js';
-import { logger, throwError } from 'lib/log.js';
+import { logger } from 'lib/log.js';
+import * as print from 'lib/print-helper.js';
 
 export async function delete_question(): Promise<void> {
   const org = new OrgManager();
@@ -69,8 +70,9 @@ class OrgManager {
       this.spinner.suffixText = 'done';
       this.spinner.succeed();
     } catch (error) {
-      this.spinner.fail('Failed to delete Scratch Org');
-      throwError(String(error));
+      this.spinner.suffixText = 'failed! Error:';
+      this.spinner.fail();
+      print.error(String(error));
     }
   }
 }
