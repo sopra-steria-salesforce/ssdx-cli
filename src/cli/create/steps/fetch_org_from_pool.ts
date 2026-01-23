@@ -42,7 +42,7 @@ class PoolFetcher {
       cmd: 'npx sfp pool:fetch',
       args: [
         '--tag',
-        'dev2', // TODO: configurable tag name?
+        this.getTag(),
         '--setdefaultusername',
         '--alias',
         `"${CreateOptions.scratchOrgName}"`,
@@ -54,6 +54,9 @@ class PoolFetcher {
       spinnerErrorText: 'failed to fetch!',
       exitOnError: false,
     });
+  }
+  private getTag(): string {
+    return CreateOptions.ci ? 'ci' : 'dev';
   }
 
   private get successText(): string {
