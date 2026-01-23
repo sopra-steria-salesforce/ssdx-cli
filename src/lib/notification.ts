@@ -19,6 +19,8 @@ export class Notification {
     return join(__dirname, 'assets', 'salesforce.png');
   }
 
+  // TODO: handle non-whitespace (see --ci usage on scratch create fail)
+
   static async show(options: NotificationOptions): Promise<void> {
     // Check if notifications are disabled
     if (this.disableNotifications) {
