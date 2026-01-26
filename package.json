@@ -54,7 +54,7 @@
     "commander": "^14.0.0",
     "make-dir": "^5.0.0",
     "node-notifier": "^10.0.1",
-    "ora": "8.2.0",
+    "ora": "9.0.0",
     "pad": "^3.3.0",
     "pino": "^9.9.1",
     "promisify-child-process": "^4.1.2"
