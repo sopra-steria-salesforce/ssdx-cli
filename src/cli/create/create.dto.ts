@@ -18,6 +18,7 @@ export default class CreateOptions extends BaseOptions {
   public static skipDependencies: string;
   public static skipDeployment: string;
   public static skipPermsetAssignment: string;
+  public static enablePools: string;
 
   // debug
   public static keepExistingOrg: string;
@@ -29,13 +30,14 @@ export default class CreateOptions extends BaseOptions {
 
     CreateOptions.configFile = options.configFile;
     CreateOptions.durationDays = options.durationDays;
-    CreateOptions.scratchOrgName = options.scratchOrgName;
+    CreateOptions.scratchOrgName = options.scratchOrgName; // TODO: give error if adding spaces or invalid signs
     CreateOptions.packageKey = options.packageKey;
 
     CreateOptions.deleteCurrentOrg = options.deleteCurrentOrg;
     CreateOptions.skipDependencies = options.skipDependencies;
     CreateOptions.skipDeployment = options.skipDeployment;
     CreateOptions.skipPermsetAssignment = options.skipPermsetAssignment;
+    CreateOptions.enablePools = options.enablePools;
 
     CreateOptions.keepExistingOrg = options.keepExistingOrg;
     print.debug('Parsing create command parameters', options);

@@ -6,7 +6,11 @@ export function addBaseOptions(command: Command): void {
   command
     .optionsGroup('Global Parameters')
     .option('--disable-notifications', 'Disabled OS notifications for steps', false)
-    .option('--ci', 'Disables interactivity for more granular output', false)
+    .option(
+      '--ci',
+      'Disables interactivity for more granular output and sets pool tag to "ci" (if pools are used)',
+      false
+    )
     .option('--debug', 'Output debug information to console', false);
 }
 
@@ -21,7 +25,7 @@ export default class BaseOptions {
   public static debug: boolean = false;
 
   public static setFields(options: typeof BaseOptions): void {
-    BaseOptions.targetOrg = options.targetOrg;
+    BaseOptions.targetOrg = options.targetOrg; // TODO: give error if using spaces
     BaseOptions.targetDevHub = options.targetDevHub;
 
     BaseOptions.disableNotifications = options.disableNotifications;

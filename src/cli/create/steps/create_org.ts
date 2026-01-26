@@ -10,15 +10,16 @@ import { throwError } from 'lib/log.js';
 
 export async function createScratchOrg(): Promise<void> {
   const org = new create_org();
-  org.init();
-  await org.setDevHub();
-  await org.setOrgConfig();
 
   if (CreateOptions.keepExistingOrg) {
     org.keepScratchOrg();
-  } else {
-    await org.createScratchOrg();
+    return;
   }
+
+  org.init();
+  await org.setDevHub();
+  await org.setOrgConfig();
+  await org.createScratchOrg();
 }
 
 class create_org {
@@ -29,7 +30,7 @@ class create_org {
   constructor() {}
 
   public init(): void {
-    this.spinner = ora('Creating Scratch Org ...').start();
+    this.spinner = ora('Creating Scratch Org').start();
     handleProcessSignals(this.spinner);
   }
 
@@ -59,16 +60,13 @@ class create_org {
 
   public keepScratchOrg(): void {
     CreateOptions.scratchOrgResult = { username: CreateOptions.scratchOrgName } as ScratchOrgCreateResult;
-    this.spinner.suffixText = `done! (kept ${colors.yellow(CreateOptions.scratchOrgResult.username || '')})`;
-    this.spinner.succeed();
-    print.log(this.successText);
   }
 
   public async createScratchOrg(): Promise<void> {
     try {
       CreateOptions.scratchOrgResult = await scratchOrgCreate(this.scratchOrgOptions);
 
-      this.spinner.suffixText = `done! (${colors.yellow(CreateOptions.scratchOrgResult.username || '')})`;
+      this.spinner.suffixText = `... created: ${colors.yellow(CreateOptions.scratchOrgResult.username || '')}`;
       this.spinner.succeed();
       print.log(this.successText);
     } catch (error) {
